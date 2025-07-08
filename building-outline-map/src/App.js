@@ -3,10 +3,11 @@ import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import './App.css';
 
-import Sidebar from './components/Sidebar';
-import Navbar from './components/Navbar';
+import Sidebar from './components/Sidebar/Sidebar';
+import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
 import Popup from './components/Popup/Popup';
+
 
 const VWORLD_KEY = '2C432B0A-177E-319F-B4CD-ABBCEC8A9C9D';
 
