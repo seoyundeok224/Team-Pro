@@ -1,38 +1,113 @@
+/* 🌐 전체 페이지 및 앱 루트 요소 크기 설정 및 스크롤 제거 */
+html, body, #root {
+  height: 100%;             /* 전체 높이 채우기 */
+  width: 100%;              /* 전체 너비 채우기 */
+  margin: 0;                /* 바깥 여백 제거 */
+  padding: 0;               /* 안쪽 여백 제거 */
+  overflow: hidden;         /* 스크롤 바 제거 (지도가 꽉 차게) */
+}
+
+/* 🧱 전체 앱 컨테이너 */
 .App {
-  text-align: center;
+  display: flex;            /* 플렉스 박스로 구성 */
+  flex-direction: column;   /* 위에서 아래로 배치 */
+  height: 100%;             /* 전체 높이 사용 */
+  width: 100%;              /* 전체 너비 사용 */
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* 🧭 네비게이션 바 */
+nav {
+  background-color: white;  /* 배경 흰색 */
+  color: black;             /* 글자색 검정 */
+  padding: 10px 20px;       /* 안쪽 여백 */
+  text-align: center;       /* 텍스트 가운데 정렬 */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* 🗺️ 메인 레이아웃 */
+.main-layout {
+  display: flex;            /* 사이드바 + 지도 나란히 배치 */
+  flex: 1;                  /* 남은 공간 모두 차지 */
+  overflow: hidden;         /* 내부 스크롤 방지 */
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+/* 📚 사이드바 */
+.sidebar {
+  width: 350px;             /* 고정 너비 */
+  background-color: rgba(0, 0, 0, 0.1);  /* 약간 투명한 회색 배경 */
+  padding: 20px;            /* 안쪽 여백 */
+  box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.2); /* 오른쪽 그림자 */
+  overflow-y: auto;         /* 세로 스크롤 허용 */
+  flex-shrink: 0;           /* 크기 줄어들지 않게 */
+  box-sizing: border-box;   /* 패딩 포함한 전체 너비 계산 */
+  height: 100%;             /* 전체 높이 사용 */
 }
 
-.App-link {
-  color: #61dafb;
+/* 🔍 검색 입력창 */
+.search-input {
+  width: 100%;              /* 너비 100% */
+  padding: 5px 10px;        /* 안쪽 여백 */
+  margin-bottom: 12px;      /* 아래 여백 */
+  font-size: 15px;          /* 글자 크기 */
+  box-sizing: border-box;   /* 패딩 포함 너비 계산 */
+  border: 1px solid #ccc;   /* 회색 테두리 */
+  border-radius: 4px;       /* 모서리 둥글게 */
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* 🔍 검색 버튼 */
+.search-button {
+  width: 100%;              /* 너비 100% */
+  padding: 5px 10px;        /* 안쪽 여백 */
+  margin-bottom: 12px;      /* 아래 여백 */
+  font-size: 15px;          /* 글자 크기 */
+  border-radius: 4px;       /* 모서리 둥글게 */
+  border: none;             /* 테두리 제거 */
+  background-color: #eee;   /* 밝은 회색 배경 */
+  cursor: pointer;          /* 마우스 올리면 커서 변경 */
+}
+
+/* 🗺️ 지도 영역 */
+.map-container {
+  flex-grow: 1;             /* 사이드바 제외한 모든 영역 사용 */
+  height: 100%;             /* 전체 높이 */
+  overflow: hidden;         /* 스크롤 제거 */
+}
+
+/* 🦶 푸터 */
+footer {
+  background-color: white;  /* 흰 배경 */
+  color: black;             /* 검정 글자 */
+  text-align: center;       /* 가운데 정렬 */
+  padding: 10px 20px;       /* 안쪽 여백 */
+}
+
+/* 🌙 다크 모드 전체 앱 */
+.App.dark {
+  background-color: #1e1e1e; /* 어두운 배경 */
+  color: white;              /* 흰 글자 */
+}
+
+/* 🌙 다크 모드 - nav, footer */
+.App.dark nav,
+.App.dark footer {
+  background-color: #111;    /* 더 어두운 배경 */
+  color: white;              /* 흰 글자 */
+}
+
+/* 🌙 다크 모드 - sidebar */
+.App.dark .sidebar,
+.sidebar.dark {
+  background-color: #111;    /* 어두운 배경 */
+  color: white;              /* 흰 글자 */
+}
+
+/* 🌙 다크 모드 - sidebar 내부 버튼 */
+.sidebar.dark button {
+  background-color: #333;    /* 중간 회색 버튼 배경 */
+  color: white;              /* 흰 글자 */
+}
+
+/* 🌙 다크 모드 - 검색 버튼 */
+.App.dark .search-button {
+  background-color: #444;    /* 버튼 어둡게 */
+  color: white;              /* 흰 글자 */
 }

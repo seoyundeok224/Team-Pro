@@ -85,8 +85,9 @@ const MainMap = ({ mapStyle = 'base', darkMode = false, searchQuery }) => {
     <MapContainer
       center={[36.5, 127.5]}              // 대한민국 중앙 좌표
       zoom={7}                            // 기본 줌 레벨
-      minZoom={6}                         // 최소 줌 제한
-      maxZoom={17}                        // 최대 줌 제한
+      minZoom={7}                         // 최소 줌 제한
+      maxZoom={17} 
+      mapsetMinZoom={10}                // 6단계 이하로 축소 불가                       // 최대 줌 제한
       maxBounds={KOREA_BOUNDS}            // 바운드 범위 설정
       maxBoundsViscosity={1.0}            // 바운드 강제 이동 제한
       scrollWheelZoom={true}              // 마우스 휠 확대 허용

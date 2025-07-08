@@ -1,11 +1,18 @@
-/* 🗺️ 지도 전체 컨테이너 스타일 */
+/* 최상위 요소 높이 지정 */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* 지도 컨테이너 스타일 */
 .leaflet-container {
   width: 100%;
   height: 100%;
-  background-color: #f0f0f0; /* 지도 로딩 전 배경색 (선택사항) */
+  background-color: #f0f0f0;
 }
 
-/* 🌙 다크 모드 - body 배경 및 텍스트 */
+/* 다크 모드 스타일 */
 body.dark-mode {
   background-color: #222;
   color: white;
