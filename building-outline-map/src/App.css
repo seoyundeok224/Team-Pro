@@ -111,3 +111,11 @@ footer {
   background-color: #444;    /* 버튼 어둡게 */
   color: white;              /* 흰 글자 */
 }
+
+/* 미터 바 흰색박스 투명화 */
+.leaflet-control-scale-line {
+  background: transparent !important; /* 배경 투명하게 */        
+  box-shadow: none !important;        /* 그림자 제거 */
+  color: #000 !important;             /* 텍스트 색상 (원하면 변경 가능) */
+  font-weight: bold;
+}
