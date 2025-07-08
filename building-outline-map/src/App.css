@@ -119,3 +119,18 @@ footer {
   color: #000 !important;             /* 텍스트 색상 (원하면 변경 가능) */
   font-weight: bold;
 }
+
+/* 축소확대버튼 팝업보다 뒤로가게 위치지정 */
+.leaflet-top.leaflet-left {
+  z-index: 900 !important; /* 팝업보다 뒤로 보냄 */
+}
+
+/* 브이월드 저작권 표기도 초기로딩시 다른 컴포넌트와 동일한 상태로 로드 */
+.leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.4) !important; /* 반투명 회색 */
+  padding: 2px 6px;
+  font-size: 11px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+  z-index: 600 !important; /* 다른 요소보다 뒤로도 가능 */
+}
