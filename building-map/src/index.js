@@ -1,13 +1,18 @@
-import React from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import MainMap from './components/MainMap/MainMap';
+import Navbar from './components/Navbar/Navbar';
+import Footer from './components/Footer/Footer';
+import Popup from './components/Popup/Popup';
+import Sidebar from './components/Sidebar/Sidebar';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <Navbar />
   </React.StrictMode>
 );
 

@@ -1,0 +1,51 @@
+/* 📌 팝업 전체를 덮는 어두운 배경 */
+.popup-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* 반투명 검정 */
+  z-index: 999; /* 항상 위에 표시되도록 */
+}
+
+/* 📦 팝업 박스 컨테이너 */
+.popup-box {
+  position: absolute;
+  top: 10%;
+  left: 22%;
+  transform: translateX(-50%); /* 수평 중앙 정렬 */
+  background-color: #fff;
+  padding: 20px;
+  width: 320px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+  cursor: move; /* 마우스 포인터 이동 모양 */
+}
+
+/* 🪟 팝업 상단 헤더 (드래그 핸들) */
+.popup-header {
+  background-color: #f1f1f1;
+  padding: 8px 0;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  border-bottom: 1px solid #ccc;
+  cursor: move; /* 드래그 가능 표시 */
+}
+
+/* 🖼️ 팝업 이미지 스타일 */
+.popup-image {
+  width: 100%;
+  margin-top: 12px;
+  border-radius: 8px;
+}
+
+/* 📝 팝업 본문 텍스트 */
+.popup-text {
+  margin: 5px 0;
+}
+
+/* ❌ 닫기 버튼 컨테이너 */
+.popup-buttons {
+  margin-top: 12px;
+  display: flex;
+  justify-content: right; /* 오른쪽 정렬 */
+}
