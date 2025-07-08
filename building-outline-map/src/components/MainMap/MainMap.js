@@ -9,6 +9,7 @@ const VWORLD_KEY = '2C432B0A-177E-319F-B4CD-ABBCEC8A9C9D';
 const TILE_URLS = {
   base: `https://api.vworld.kr/req/wmts/1.0.0/${VWORLD_KEY}/Base/{z}/{y}/{x}.png`,
   satellite: `https://api.vworld.kr/req/wmts/1.0.0/${VWORLD_KEY}/Satellite/{z}/{y}/{x}.jpeg`,
+  english: `https://api.vworld.kr/req/wmts/1.0.0/${VWORLD_KEY}/Base/English/{z}/{y}/{x}.png`, // ✅ 영문 지도 추가
 };
 
 // ℹ️ 저작권 표시 텍스트
@@ -86,7 +87,7 @@ const MainMap = ({ mapStyle = 'base', darkMode = false, searchQuery }) => {
       center={[36.5, 127.5]}              // 대한민국 중앙 좌표
       zoom={7}                            // 기본 줌 레벨
       minZoom={7}                         // 최소 줌 제한
-      maxZoom={17} 
+      maxZoom={17}
       mapsetMinZoom={10}                // 6단계 이하로 축소 불가                       // 최대 줌 제한
       maxBounds={KOREA_BOUNDS}            // 바운드 범위 설정
       maxBoundsViscosity={1.0}            // 바운드 강제 이동 제한

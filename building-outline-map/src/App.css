@@ -111,3 +111,26 @@ footer {
   background-color: #444;    /* 버튼 어둡게 */
   color: white;              /* 흰 글자 */
 }
+
+/* 미터 바 흰색박스 투명화 */
+.leaflet-control-scale-line {
+  background: transparent !important; /* 배경 투명하게 */        
+  box-shadow: none !important;        /* 그림자 제거 */
+  color: #000 !important;             /* 텍스트 색상 (원하면 변경 가능) */
+  font-weight: bold;
+}
+
+/* 축소확대버튼 팝업보다 뒤로가게 위치지정 */
+.leaflet-top.leaflet-left {
+  z-index: 900 !important; /* 팝업보다 뒤로 보냄 */
+}
+
+/* 브이월드 저작권 표기도 초기로딩시 다른 컴포넌트와 동일한 상태로 로드 */
+.leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.4) !important; /* 반투명 회색 */
+  padding: 2px 6px;
+  font-size: 11px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+  z-index: 1 !important; /* 📌 팝업 백드롭보다 뒤로 보내기 */
+}

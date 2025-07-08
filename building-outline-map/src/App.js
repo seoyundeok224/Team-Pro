@@ -7,6 +7,7 @@ import Sidebar from './components/Sidebar/Sidebar';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
 import Popup from './components/Popup/Popup';
+import ScaleControl from './components/ScaleControl/ScaleControl';
 
 
 const VWORLD_KEY = '2C432B0A-177E-319F-B4CD-ABBCEC8A9C9D';
@@ -14,6 +15,7 @@ const VWORLD_KEY = '2C432B0A-177E-319F-B4CD-ABBCEC8A9C9D';
 const TILE_URLS = {
   base: `https://api.vworld.kr/req/wmts/1.0.0/${VWORLD_KEY}/Base/{z}/{y}/{x}.png`,
   satellite: `https://api.vworld.kr/req/wmts/1.0.0/${VWORLD_KEY}/Satellite/{z}/{y}/{x}.jpeg`,
+  english: `https://api.vworld.kr/req/wmts/1.0.0/${VWORLD_KEY}/Base/English/{z}/{y}/{x}.png`,
 };
 
 const ATTRIBUTION = '© VWorld';
@@ -74,6 +76,10 @@ function App() {
     fetchCoords();
   }, [searchQuery, mapInstance]);
 
+  useEffect(() => {
+    setMapStyle(language === 'en' ? 'english' : 'base');
+  }, [language]);
+
   const tileUrl = TILE_URLS[mapStyle] || TILE_URLS.base;
 
   return (
@@ -113,6 +119,7 @@ function App() {
           >
             <TileLayer url={tileUrl} attribution={ATTRIBUTION} noWrap />
             {markerPosition && <Marker position={markerPosition} />}
+            <ScaleControl />
           </MapContainer>
         </div>
       </div>
