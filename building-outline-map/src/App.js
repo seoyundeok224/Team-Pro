@@ -17,7 +17,7 @@ const TILE_URLS = {
   english: `https://api.vworld.kr/req/wmts/1.0.0/${VWORLD_KEY}/Base/English/{z}/{y}/{x}.png`, 
 };
 
-const ATTRIBUTION = '© VWorld'; Sidebar
+const ATTRIBUTION = '© VWorld';
 
 const KOREA_BOUNDS = [
   [33.0, 124.0],
@@ -34,10 +34,6 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [markerPosition, setMarkerPosition] = useState(null);
   const [mapInstance, setMapInstance] = useState(null);
-
-useEffect(() => {
-  setMapStyle(language === 'en' ? 'english' : 'base');
-}, [language]);
 
 useEffect(() => {
   document.body.style.backgroundColor = darkMode ? '#222' : '#fff';
@@ -78,6 +74,10 @@ useEffect(() => {
 
   fetchCoords();
 }, [searchQuery, mapInstance]);
+
+useEffect(() => {
+  setMapStyle(language === 'en' ? 'english' : 'base');
+}, [language]);
 
 const tileUrl = TILE_URLS[mapStyle] || TILE_URLS.base;
 
