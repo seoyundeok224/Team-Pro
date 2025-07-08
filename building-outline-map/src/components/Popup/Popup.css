@@ -10,7 +10,7 @@
 .popup-box {
   position: absolute;
   top: 10%;
-  left: 50%;
+  left: 22%;
   transform: translateX(-50%); /* 수평 중앙 정렬 */
   background-color: #fff;
   padding: 20px;

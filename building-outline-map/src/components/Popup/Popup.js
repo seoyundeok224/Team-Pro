@@ -5,7 +5,7 @@ import './Popup.css';
 
 const Popup = () => {
   const [visible, setVisible] = useState(true);
-  const nodeRef = useRef(null); // ⚠️ Draggable에 필요한 ref
+  const nodeRef = useRef(null); // Draggable과 함께 사용할 ref
 
   const closePopup = () => {
     setVisible(false);
@@ -15,8 +15,8 @@ const Popup = () => {
 
   return (
     <div className="popup-backdrop">
-      {/* nodeRef를 넘겨줘야 className 오류 방지됨 */}
-      <Draggable handle=".popup-header" nodeRef={nodeRef}>
+      {/* 팝업 전체를 드래그 가능하게 설정 */}
+      <Draggable nodeRef={nodeRef}>
         <div className="popup-box" ref={nodeRef}>
           <div className="popup-header">
             <h3 style={{ margin: 0 }}>information(안내)</h3>
