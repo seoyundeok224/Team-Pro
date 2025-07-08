@@ -132,5 +132,5 @@ footer {
   font-size: 11px;
   border-radius: 4px;
   margin-bottom: 4px;
-  z-index: 600 !important; /* 다른 요소보다 뒤로도 가능 */
+  z-index: 1 !important; /* 📌 팝업 백드롭보다 뒤로 보내기 */
 }
