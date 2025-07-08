@@ -1,0 +1,96 @@
+/* 🧱 전체 푸터 영역 */
+.footer-content {
+  display: flex;               /* 내부 요소들을 세로로 정렬 */
+  flex-direction: column;
+  gap: 2px;                    /* 요소 간 간격 줄임 */
+  padding: 0.2% 8px;           /* 상하: 상대값으로 압축, 좌우는 고정 */
+  width: 100%;
+  font-size: 11px;
+  box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.1);  /* 👇 subtle 위쪽 그림자 추가 */
+}
+
+/* 🏠 주소 텍스트 - 가운데 정렬, 작은 글씨 */
+.footer-address {
+  text-align: center;
+  font-size: 12px;
+  color: inherit;
+  line-height: 1.4;           /* 📏 줄 간격 살짝 키워서 가독성↑ */
+  position: relative;
+  top: 30px;
+  margin-top: 0;
+  margin-bottom: 0;
+  z-index: 1;
+}
+
+/* 🌐 SNS 아이콘 그룹 */
+.icon-container {
+  display: flex;
+  gap: 12px;
+}
+
+/* ▶️ 아이콘 오른쪽 정렬 */
+#social-icons-right {
+  display: flex;
+  justify-content: flex-end;
+  width: 78%;
+  padding-right: 20px;
+  margin-top: 4px;
+  position: relative;
+  z-index: 10;
+}
+
+/* 🖼️ 아이콘 스타일 */
+.sns-icon {
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: auto;
+  filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.3)); /* 💡 약한 그림자로 입체감 */
+}
+
+.sns-icon:hover {
+  opacity: 0.7;
+  transform: scale(1.05); /* 🌀 살짝 확대 효과 */
+}
+
+/* ☀️ 라이트 테마 */
+.footer-light {
+  background-color: #f9f9f9;    /* 🔆 더 밝고 부드러운 배경 */
+  color: #333;
+}
+
+/* 🌙 다크 테마 */
+.footer-dark {
+  background-color: #141414;    /* 🌑 더 세련된 깊은 다크 */
+  color: #f0f0f0;                /* 💡 더 밝고 세련된 흰색 */
+  border-top: 1px solid rgba(255, 255, 255, 0.05); /* subtle 테두리 */
+}
+
+/* 다크모드 구분선 */
+.footer-dark .footer-divider {
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+/* 다크모드 SNS 아이콘 hover: glow */
+.footer-dark .sns-icon:hover {
+  opacity: 1;
+  transform: scale(1.08);
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+}
+
+/* ━ 구분선 (기본) */
+.footer-divider {
+  width: 90%;
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
+  margin: 10px auto 8px auto;
+}
+
+/* Ⓒ 저작권 텍스트 */
+footer p {
+  font-size: 13px;
+  margin: 0;
+  text-align: center;
+  color: inherit;
+  opacity: 0.9; /* 💬 살짝 연하게 */
+}
