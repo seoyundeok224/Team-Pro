@@ -7,7 +7,7 @@ module.exports = function(app) {
       target: 'https://api.vworld.kr',
       changeOrigin: true,
       pathRewrite: {
-        '^/vworld': '',
+         "^/vworld": "",
       },
     })
   );
