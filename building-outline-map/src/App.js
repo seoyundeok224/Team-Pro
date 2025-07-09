@@ -43,12 +43,12 @@ function App() {
 
 
   // 프록시 서버로 연결이 되는지 확인용.
-   useEffect(() => {
-          fetch('/vworld/test')
-            .then((res) => res.text())
-            .then((data) => console.log('✅ 프록시 동작 테스트 응답:', data))
-            .catch((err) => console.error('❌ 프록시 동작 실패:', err));
-        }, []);
+  useEffect(() => {
+    fetch('/vworld/test')
+      .then((res) => res.text())
+      .then((data) => console.log('✅ 프록시 동작 테스트 응답:', data))
+      .catch((err) => console.error('❌ 프록시 동작 실패:', err));
+  }, []);
 
   useEffect(() => {
     document.body.style.backgroundColor = darkMode ? '#222' : '#fff';
@@ -63,23 +63,38 @@ function App() {
 
         console.log("현재 사용 중인 GEOCODER_KEY:", GEOCODER_KEY);
 
+        // 기존 주소: 지번으로 받기 -> 수정함: 도로명 주소로 받기 -> 수정함: 도로명&지번 모두 검색허용.
+        // &refine=true: 주소가 명확해야함 -> 수정: &refine=false: 주소가 명확하지 않아도 검색 가능.
         const res = await fetch(
-          `/vworld/req/address?service=address&request=getcoord&version=2.0&crs=EPSG:4326&type=parcel&address=${encodeURIComponent(
+          `/vworld/req/address?service=address&request=getcoord&version=2.0&crs=EPSG:4326&type=both&address=${encodeURIComponent(
             searchQuery
-          )}&refine=true&format=json&key=${GEOCODER_KEY}`
+          )}&refine=false&format=json&key=${GEOCODER_KEY}`
         );
 
         //Error: Unexpected response: 200 오류방지 확인 log 추가.
-        console.log(
-          `/vworld/req/address?service=address&request=getcoord&version=2.0&crs=EPSG:4326&type=parcel&address=${encodeURIComponent(searchQuery)}&refine=true&format=json&key=${GEOCODER_KEY}`
-        );
+        // console.log(
+        //   `/vworld/address?service=address&request=getcoord&version=2.0&crs=EPSG:4326&type=parcel&address=${encodeURIComponent(searchQuery)}&refine=true&format=json&key=${GEOCODER_KEY}`
+        // );
 
 
         const contentType = res.headers.get('Content-Type');
-        if (!res.ok || !(contentType && contentType.includes('json'))) {
-          throw new Error(`Unexpected response: ${res.status} | ${contentType}`);
+
+        // ✅ JSON이 아닌 XML 응답일 경우 대응
+        if (!contentType || !contentType.includes('application/json')) {
+          const text = await res.text();
+
+          if (text.includes('<code>404</code>')) {
+            alert('❌ VWorld 요청 주소가 잘못되었습니다. (404)');
+            console.log('📦 응답 XML (404):', text);
+            return;
+          }
+
+          alert('⚠️ 예상치 못한 XML 응답입니다. 응답을 콘솔에서 확인하세요.');
+          console.log('📦 응답 XML:', text);
+          return;
         }
 
+        // ✅ JSON 응답일 경우 원래대로 처리
         const data = await res.json();
         const item = data?.response?.result?.items?.[0];
         if (item) {
