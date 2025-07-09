@@ -12,7 +12,7 @@ import ScaleControl from './components/ScaleControl/ScaleControl';
 
 const VWORLD_KEY = '2C432B0A-177E-319F-B4CD-ABBCEC8A9C9D';
 // 지오코드로만으로도 주소검색 -> 맵위치 이동이 가능하다고 해서 검색 API는 주석처리함.
-// const SEARCH_KEY = '3078DF6E-3C1B-3B6A-8C30-169F6A11A51A';
+const SEARCH_KEY = '3078DF6E-3C1B-3B6A-8C30-169F6A11A51A';
 const GEOCODER_KEY = 'E414852A-B728-3B7B-A2A1-0FA55C4DD7A3';
 // 지오코드 API 전역사용 허용.
 window.GEOCODER_KEY = GEOCODER_KEY;
@@ -58,59 +58,46 @@ function App() {
   useEffect(() => {
     if (!searchQuery) return;
 
+    // mapInstance 생길 때까지 polling (10ms 간격, 최대 1초)
+    const interval = setInterval(() => {
+      if (mapInstance) {
+        fetchCoords();
+        clearInterval(interval);
+      }
+    }, 10);
+
+    const timeout = setTimeout(() => clearInterval(interval), 1000);
+
     const fetchCoords = async () => {
       try {
+        const url = `/vworld/req/search?service=search&request=search&version=2.0&crs=EPSG:4326&type=place&query=${encodeURIComponent(searchQuery)}&format=json&size=1&key=${SEARCH_KEY}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        const item = data?.response?.result?.items?.[0];
 
-        console.log("현재 사용 중인 GEOCODER_KEY:", GEOCODER_KEY);
+        console.log("🟡 searchQuery 바뀜!", searchQuery);
+        console.log("🧭 mapInstance 상태:", mapInstance);
 
-        // 기존 주소: 지번으로 받기 -> 수정함: 도로명 주소로 받기 -> 수정함: 도로명&지번 모두 검색허용.
-        // &refine=true: 주소가 명확해야함 -> 수정: &refine=false: 주소가 명확하지 않아도 검색 가능.
-        const res = await fetch(
-          `/vworld/req/address?service=address&request=getcoord&version=2.0&crs=EPSG:4326&type=both&address=${encodeURIComponent(
-            searchQuery
-          )}&refine=false&format=json&key=${GEOCODER_KEY}`
-        );
-
-        //Error: Unexpected response: 200 오류방지 확인 log 추가.
-        // console.log(
-        //   `/vworld/address?service=address&request=getcoord&version=2.0&crs=EPSG:4326&type=parcel&address=${encodeURIComponent(searchQuery)}&refine=true&format=json&key=${GEOCODER_KEY}`
-        // );
-        const contentType = res.headers.get('Content-Type');
-
-        // ✅ JSON이 아닌 XML 응답일 경우 대응
-        if (!contentType || !contentType.includes('application/json')) {
-          const text = await res.text();
-
-          if (text.includes('<code>404</code>')) {
-            alert('❌ VWorld 요청 주소가 잘못되었습니다. (404)');
-            console.log('📦 응답 XML (404):', text);
-            return;
-          }
-
-          alert('⚠️ 예상치 못한 XML 응답입니다. 응답을 콘솔에서 확인하세요.');
-          console.log('📦 응답 XML:', text);
+        if (!item) {
+          alert('검색 결과가 없습니다.');
           return;
         }
 
-        // ✅ JSON 응답일 경우 원래대로 처리
-        const data = await res.json();
-        const item = data?.response?.result?.items?.[0];
-        if (item) {
-          const lat = parseFloat(item.point.y);
-          const lng = parseFloat(item.point.x);
-          setMarkerPosition([lat, lng]);
-          mapInstance?.setView([lat, lng], 13);
-        } else {
-          alert('검색 결과가 없습니다.');
-        }
+        const lat = parseFloat(item.point.y);
+        const lng = parseFloat(item.point.x);
+        setMarkerPosition([lat, lng]);
+        mapInstance.setView([lat, lng], 13);
       } catch (error) {
         console.error('검색 오류:', error);
         alert('검색 중 문제가 발생했습니다.');
       }
     };
 
-    fetchCoords();
-  }, [searchQuery, mapInstance]);
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
+  }, [searchQuery]);
 
   useEffect(() => {
     setMapStyle(language === 'en' ? 'english' : 'base');
@@ -150,8 +137,11 @@ function App() {
             dragging
             zoomControl
             worldCopyJump={false}
-            whenCreated={setMapInstance}
             style={{ width: '100%', height: '100%' }}
+            whenCreated={(instance) => {
+              console.log("📍 Map instance created!", instance);
+              setMapInstance(instance);
+            }}
           >
             <TileLayer url={tileUrl} attribution={ATTRIBUTION} noWrap />
             {markerPosition && <Marker position={markerPosition} />}
