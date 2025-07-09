@@ -75,8 +75,6 @@ function App() {
         // console.log(
         //   `/vworld/address?service=address&request=getcoord&version=2.0&crs=EPSG:4326&type=parcel&address=${encodeURIComponent(searchQuery)}&refine=true&format=json&key=${GEOCODER_KEY}`
         // );
-
-
         const contentType = res.headers.get('Content-Type');
 
         // ✅ JSON이 아닌 XML 응답일 경우 대응
