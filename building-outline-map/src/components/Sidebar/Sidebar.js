@@ -48,11 +48,6 @@ const Sidebar = ({
       <button onClick={() => setMapStyle('base')}>일반 지도</button>
       <button onClick={() => setMapStyle('satellite')}>위성 지도</button>
 
-      {/* 🌐 언어 선택 */}
-      <h3>언어</h3>
-      <button onClick={() => setLanguage('ko')}>한국어</button>
-      <button onClick={() => setMapStyle('english')}>영문</button>
-
       {/* 🌙 다크 모드 전환 */}
       <h3>다크 모드</h3>
       <button onClick={() => setDarkMode(!darkMode)}>

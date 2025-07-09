@@ -1,0 +1,32 @@
+/* 다크 모드와 라이트 모드 배경 및 텍스트 색상 */
+.nav-dark {
+  background-color: #222;
+  color: white;
+}
+
+.nav-light {
+  background-color: #f1f1f1;
+  color: #333;
+}
+
+/* 네비게이션 바 전체 레이아웃 */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* 왼쪽 로고 영역 */
+.logo {
+  font-size: 24px;
+}
+
+/* 오른쪽 시계 영역 */
+.clock {
+  font-family: monospace;
+  font-size: 18px;
+  color: inherit; /* 부모에서 색상 상속 */
+}
