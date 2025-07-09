@@ -14,6 +14,8 @@ const VWORLD_KEY = '2C432B0A-177E-319F-B4CD-ABBCEC8A9C9D';
 // 지오코드로만으로도 주소검색 -> 맵위치 이동이 가능하다고 해서 검색 API는 주석처리함.
 // const SEARCH_KEY = '3078DF6E-3C1B-3B6A-8C30-169F6A11A51A';
 const GEOCODER_KEY = 'E414852A-B728-3B7B-A2A1-0FA55C4DD7A3';
+// 지오코드 API 전역사용 허용.
+window.GEOCODER_KEY = GEOCODER_KEY;
 
 const TILE_URLS = {
   base: `https://api.vworld.kr/req/wmts/1.0.0/${VWORLD_KEY}/Base/{z}/{y}/{x}.png`,
@@ -39,6 +41,15 @@ function App() {
   const [markerPosition, setMarkerPosition] = useState(null);
   const [mapInstance, setMapInstance] = useState(null);
 
+
+  // 프록시 서버로 연결이 되는지 확인용.
+   useEffect(() => {
+          fetch('/vworld/test')
+            .then((res) => res.text())
+            .then((data) => console.log('✅ 프록시 동작 테스트 응답:', data))
+            .catch((err) => console.error('❌ 프록시 동작 실패:', err));
+        }, []);
+
   useEffect(() => {
     document.body.style.backgroundColor = darkMode ? '#222' : '#fff';
     document.body.style.color = darkMode ? '#fff' : '#000';
@@ -49,14 +60,23 @@ function App() {
 
     const fetchCoords = async () => {
       try {
+
+        console.log("현재 사용 중인 GEOCODER_KEY:", GEOCODER_KEY);
+
         const res = await fetch(
           `/vworld/req/address?service=address&request=getcoord&version=2.0&crs=EPSG:4326&type=parcel&address=${encodeURIComponent(
             searchQuery
           )}&refine=true&format=json&key=${GEOCODER_KEY}`
         );
 
+        //Error: Unexpected response: 200 오류방지 확인 log 추가.
+        console.log(
+          `/vworld/req/address?service=address&request=getcoord&version=2.0&crs=EPSG:4326&type=parcel&address=${encodeURIComponent(searchQuery)}&refine=true&format=json&key=${GEOCODER_KEY}`
+        );
+
+
         const contentType = res.headers.get('Content-Type');
-        if (!res.ok || !contentType?.includes('application/json')) {
+        if (!res.ok || !(contentType && contentType.includes('json'))) {
           throw new Error(`Unexpected response: ${res.status} | ${contentType}`);
         }
 
