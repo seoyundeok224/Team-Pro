@@ -11,6 +11,9 @@ import ScaleControl from './components/ScaleControl/ScaleControl';
 
 
 const VWORLD_KEY = '2C432B0A-177E-319F-B4CD-ABBCEC8A9C9D';
+// 지오코드로만으로도 주소검색 -> 맵위치 이동이 가능하다고 해서 검색 API는 주석처리함.
+// const SEARCH_KEY = '3078DF6E-3C1B-3B6A-8C30-169F6A11A51A';
+const GEOCODER_KEY = 'E414852A-B728-3B7B-A2A1-0FA55C4DD7A3';
 
 const TILE_URLS = {
   base: `https://api.vworld.kr/req/wmts/1.0.0/${VWORLD_KEY}/Base/{z}/{y}/{x}.png`,
@@ -47,9 +50,9 @@ function App() {
     const fetchCoords = async () => {
       try {
         const res = await fetch(
-          `https://api.vworld.kr/req/search?service=search&request=search&version=2.0&crs=EPSG:4326&size=1&page=1&query=${encodeURIComponent(
+          `/vworld/req/address?service=address&request=getcoord&version=2.0&crs=EPSG:4326&type=parcel&address=${encodeURIComponent(
             searchQuery
-          )}&type=address&format=json&errorformat=json&key=${VWORLD_KEY}`
+          )}&refine=true&format=json&key=${GEOCODER_KEY}`
         );
 
         const contentType = res.headers.get('Content-Type');
