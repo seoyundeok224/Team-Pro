@@ -8,16 +8,24 @@ const Navbar = ({ darkMode }) => {
     const timer = setInterval(() => {
       setTime(new Date());
     }, 1000);
-
     return () => clearInterval(timer);
   }, []);
 
   const formattedTime = time.toLocaleTimeString();
+  const formattedDate = time.toLocaleDateString('ko-KR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    weekday: 'long',
+  });
 
   return (
     <nav className={`navbar ${darkMode ? 'nav-dark' : 'nav-light'}`}>
       <div className="logo">🗺️ 내 지도 앱</div>
-      <div className="clock">{formattedTime}</div>
+      <div className="clock">
+        <div>{formattedDate}</div>
+        <div>{formattedTime}</div>
+      </div>
     </nav>
   );
 };
