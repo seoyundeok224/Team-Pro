@@ -42,66 +42,10 @@ function App() {
   const [mapInstance, setMapInstance] = useState(null);
 
 
-  // 프록시 서버로 연결이 되는지 확인용.
-  useEffect(() => {
-    fetch('/vworld/test')
-      .then((res) => res.text())
-      .then((data) => console.log('✅ 프록시 동작 테스트 응답:', data))
-      .catch((err) => console.error('❌ 프록시 동작 실패:', err));
-  }, []);
-
   useEffect(() => {
     document.body.style.backgroundColor = darkMode ? '#222' : '#fff';
     document.body.style.color = darkMode ? '#fff' : '#000';
   }, [darkMode]);
-
-  useEffect(() => {
-    if (!searchQuery) return;
-
- // mapInstance 생길 때까지 polling (10ms 간격, 최대 1초)
-  const interval = setInterval(() => {
-    if (mapInstance) {
-      fetchCoords();
-      clearInterval(interval);
-    }
-  }, 10);
-
-  const timeout = setTimeout(() => clearInterval(interval), 1000);
-
-  const fetchCoords = async () => {
-    try {
-      const url = `/vworld/req/search?service=search&request=search&version=2.0&crs=EPSG:4326&type=place&query=${encodeURIComponent(searchQuery)}&format=json&size=1&key=${SEARCH_KEY}`;
-      const res = await fetch(url);
-      const data = await res.json();
-      const item = data?.response?.result?.items?.[0];
-
-      console.log("🟡 searchQuery 바뀜!", searchQuery);
-  console.log("🧭 mapInstance 상태:", mapInstance);
-
-      if (!item) {
-        alert('검색 결과가 없습니다.');
-        return;
-      }
-
-      const lat = parseFloat(item.point.y);
-      const lng = parseFloat(item.point.x);
-      setMarkerPosition([lat, lng]);
-      mapInstance.setView([lat, lng], 13);
-    } catch (error) {
-      console.error('검색 오류:', error);
-      alert('검색 중 문제가 발생했습니다.');
-    }
-  };
-
-  return () => {
-    clearInterval(interval);
-    clearTimeout(timeout);
-  };
-}, [searchQuery]);
-
-  useEffect(() => {
-    setMapStyle(language === 'en' ? 'english' : 'base');
-  }, [language]);
 
   const tileUrl = TILE_URLS[mapStyle] || TILE_URLS.base;
 
