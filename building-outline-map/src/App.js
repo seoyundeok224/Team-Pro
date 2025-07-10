@@ -8,13 +8,10 @@ import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
 import Popup from './components/Popup/Popup';
 import ScaleControl from './components/ScaleControl/ScaleControl';
-
+import WeatherBar from './components/Weather/WeatherBar';
 
 const VWORLD_KEY = '2C432B0A-177E-319F-B4CD-ABBCEC8A9C9D';
-// 지오코드로만으로도 주소검색 -> 맵위치 이동이 가능하다고 해서 검색 API는 주석처리함.
-// const SEARCH_KEY = '3078DF6E-3C1B-3B6A-8C30-169F6A11A51A';
 const GEOCODER_KEY = 'E414852A-B728-3B7B-A2A1-0FA55C4DD7A3';
-// 지오코드 API 전역사용 허용.
 window.GEOCODER_KEY = GEOCODER_KEY;
 
 const TILE_URLS = {
@@ -41,8 +38,6 @@ function App() {
   const [markerPosition, setMarkerPosition] = useState(null);
   const [mapInstance, setMapInstance] = useState(null);
 
-
-  // 프록시 서버로 연결이 되는지 확인용.
   useEffect(() => {
     fetch('/vworld/test')
       .then((res) => res.text())
@@ -55,11 +50,8 @@ function App() {
     document.body.style.color = darkMode ? '#fff' : '#000';
   }, [darkMode]);
 
-
-     // 기존 주소: 지번으로 받기 -> 수정함: 도로명 주소로 받기 -> 수정함: 도로명&지번 모두 검색허용.
-        // &refine=true: 주소가 명확해야함 -> 수정: &refine=false: 주소가 명확하지 않아도 검색 가능.
   useEffect(() => {
-  if (!searchQuery || !mapInstance) return;
+    if (!searchQuery || !mapInstance) return;
 
     const fetchCoords = async () => {
       try {
@@ -141,6 +133,8 @@ function App() {
             {markerPosition && <Marker position={markerPosition} />}
             <ScaleControl />
           </MapContainer>
+
+          <WeatherBar /> {/* ✅ 오른쪽 상단 날씨 상자 추가 */}
         </div>
       </div>
       <Footer darkMode={darkMode} />
