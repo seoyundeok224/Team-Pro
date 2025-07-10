@@ -1,6 +1,9 @@
 import React, { useEffect, useRef } from 'react';
+import './NaverMap.css'; 
 
 const NAVER_CLIENT_ID = process.env.REACT_APP_NAVER_ID;
+
+const ATTRIBUTION = '© Naver';
 
 function NaverMap() {
   const mapRef = useRef(null);
@@ -52,7 +55,7 @@ function NaverMap() {
     };
 
     document.head.appendChild(script);
-  }, []);
+  }, [markerPosition]);
   return (
     <div ref={mapRef} className="map-container"></div>
   );
