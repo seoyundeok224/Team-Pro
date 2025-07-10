@@ -8,7 +8,7 @@ const SUWON_COORDS ={
   lon: 127.0089
 };
 
-function WeatherBar() {
+function WeatherBar({darkMode}) {
 
   const [today, setToday] = useState(null);
   const [hourly, setHourly] = useState([]);
@@ -31,7 +31,9 @@ function WeatherBar() {
   }, []);
 
   return (
-    <div className="weather-placeBar">
+    
+    <div className={`weather-placeBar ${darkMode ? 'whea-dark' : 'whea-light'}`}>
+      
       <h3>🌤 수원시 장안구 영화동</h3>
 
       <div className='weather-section today-weather'>
@@ -64,6 +66,7 @@ function WeatherBar() {
             )}
           </div>
         </div>
+        
 
         {/* <div className='weather-section weekly-weather'> 
           <h4>주간 날씨</h4>

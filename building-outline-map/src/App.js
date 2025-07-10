@@ -134,7 +134,7 @@ function App() {
             <ScaleControl />
           </MapContainer>
 
-          <WeatherBar /> {/* ✅ 오른쪽 상단 날씨 상자 추가 */}
+          <WeatherBar darkMode={darkMode}/> {/* ✅ 오른쪽 상단 날씨 상자 추가 */}
         </div>
       </div>
       <Footer darkMode={darkMode} />

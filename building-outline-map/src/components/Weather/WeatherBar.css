@@ -1,3 +1,31 @@
+.whea-dark.weather-placeBar {
+  background-color: #222 !important; 
+  color: white !important;
+}
+
+.whea-light.weather-placeBar {
+  background-color: #f1f1f1 !important;
+  color: #333 !important;
+}
+
+.whea-dark .weather-section {
+  background-color: #333;
+  color: #eee;
+}
+
+.whea-light .weather-section {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.whea-dark .weather-section h4 {
+  color: #ccc;
+}
+
+.whea-light .weather-section h4 {
+  color: #333;
+}
+
 .weather-placeBar {
   position: fixed;
   top: 100px;
