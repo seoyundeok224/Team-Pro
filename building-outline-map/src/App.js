@@ -9,14 +9,6 @@ import Footer from './components/Footer/Footer';
 import Popup from './components/Popup/Popup';
 import ScaleControl from './components/ScaleControl/ScaleControl';
 
-
-const VWORLD_KEY = '2C432B0A-177E-319F-B4CD-ABBCEC8A9C9D';
-// 지오코드로만으로도 주소검색 -> 맵위치 이동이 가능하다고 해서 검색 API는 주석처리함.
-const SEARCH_KEY = '3078DF6E-3C1B-3B6A-8C30-169F6A11A51A';
-const GEOCODER_KEY = 'E414852A-B728-3B7B-A2A1-0FA55C4DD7A3';
-// 지오코드 API 전역사용 허용.
-window.GEOCODER_KEY = GEOCODER_KEY;
-
 const TILE_URLS = {
   base: `https://api.vworld.kr/req/wmts/1.0.0/${VWORLD_KEY}/Base/{z}/{y}/{x}.png`,
   satellite: `https://api.vworld.kr/req/wmts/1.0.0/${VWORLD_KEY}/Satellite/{z}/{y}/{x}.jpeg`,
