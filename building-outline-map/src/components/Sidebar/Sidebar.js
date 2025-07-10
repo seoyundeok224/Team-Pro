@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import axios from 'axios'; // axios 불러오기
+import axios from 'axios';
 
+// 📌 Sidebar 컴포넌트 정의
 const Sidebar = ({
   showEmoji, setShowEmoji,
   mapStyle, setMapStyle,
@@ -12,10 +13,10 @@ const Sidebar = ({
 }) => {
   const [inputValue, setInputValue] = useState('');
 
-  // 📌 Kakao REST API 키 (직접 코드에 하드코딩 가능하지만 보안상 .env 권장)
-  const KAKAO_REST_API_KEY = '18e03817ba40474c211871cc79a337bc';
+  // 🔑 .env에서 불러온 Kakao REST API 키
+  const KAKAO_REST_API_KEY = process.env.REACT_APP_KAKAO_REST_API_KEY;
 
-  // 🔍 검색 버튼 클릭 시 Kakao 주소 검색 API 호출
+  // 🔍 주소 검색 요청 함수 (Kakao 주소 검색 API 호출)
   const handleSearch = async () => {
     if (inputValue.trim() === '') return;
 
@@ -39,7 +40,7 @@ const Sidebar = ({
       const lat = parseFloat(place.y);
       const lon = parseFloat(place.x);
 
-      // 지도 이동 및 날씨 API 호출용 정보 전달
+      // 👉 지도 이동 및 날씨 API 호출용 정보 전달
       setSearchQuery({
         lat,
         lon,
@@ -58,6 +59,7 @@ const Sidebar = ({
     <div className={`sidebar ${darkMode ? 'dark' : ''}`}>
       <h2>🛠️ 기능 메뉴</h2>
 
+      {/* 🔎 위치 검색 입력창 및 버튼 */}
       <h3>위치 검색</h3>
       <input
         type="text"
@@ -71,19 +73,23 @@ const Sidebar = ({
 
       <hr />
 
+      {/* 🏢 마커 토글 버튼 */}
       <button onClick={() => setShowEmoji(!showEmoji)}>
         {showEmoji ? '🏢 마커 숨기기' : '🏢 마커 보이기'}
       </button>
 
+      {/* 🗺️ 지도 스타일 변경 버튼 */}
       <h3>지도 스타일</h3>
       <button onClick={() => setMapStyle('base')}>일반 지도</button>
       <button onClick={() => setMapStyle('satellite')}>위성 지도</button>
 
+      {/* 🌙 다크 모드 토글 버튼 */}
       <h3>다크 모드</h3>
       <button onClick={() => setDarkMode(!darkMode)}>
         {darkMode ? '💡 라이트 모드' : '🌙 다크 모드'}
       </button>
 
+      {/* 🔄 초기화 버튼 */}
       <h3>초기화</h3>
       <button onClick={() => window.location.reload()}>🔄 초기화</button>
     </div>
