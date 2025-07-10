@@ -42,60 +42,10 @@ function App() {
   const [mapInstance, setMapInstance] = useState(null);
 
 
-  // 프록시 서버로 연결이 되는지 확인용.
-  useEffect(() => {
-    fetch('/vworld/test')
-      .then((res) => res.text())
-      .then((data) => console.log('✅ 프록시 동작 테스트 응답:', data))
-      .catch((err) => console.error('❌ 프록시 동작 실패:', err));
-  }, []);
-
   useEffect(() => {
     document.body.style.backgroundColor = darkMode ? '#222' : '#fff';
     document.body.style.color = darkMode ? '#fff' : '#000';
   }, [darkMode]);
-
-
-     // 기존 주소: 지번으로 받기 -> 수정함: 도로명 주소로 받기 -> 수정함: 도로명&지번 모두 검색허용.
-        // &refine=true: 주소가 명확해야함 -> 수정: &refine=false: 주소가 명확하지 않아도 검색 가능.
-  useEffect(() => {
-  if (!searchQuery || !mapInstance) return;
-
-    const fetchCoords = async () => {
-      try {
-        const res = await fetch(
-          `/vworld/req/address?service=address&request=getcoord&version=2.0&crs=EPSG:4326&type=parcel&address=${encodeURIComponent(
-            searchQuery
-          )}&refine=true&format=json&key=${GEOCODER_KEY}`
-        );
-
-        const contentType = res.headers.get('Content-Type');
-        if (!res.ok || !contentType?.includes('application/json')) {
-          throw new Error(`Unexpected response: ${res.status} | ${contentType}`);
-        }
-
-        const data = await res.json();
-        const item = data?.response?.result?.items?.[0];
-        if (item) {
-          const lat = parseFloat(item.point.y);
-          const lng = parseFloat(item.point.x);
-          setMarkerPosition([lat, lng]);
-          mapInstance?.setView([lat, lng], 13);
-        } else {
-          alert('검색 결과가 없습니다.');
-        }
-      } catch (error) {
-        console.error('검색 오류:', error);
-        alert('검색 중 문제가 발생했습니다.');
-      }
-    };
-
-    fetchCoords();
-  }, [searchQuery, mapInstance]);
-
-  useEffect(() => {
-    setMapStyle(language === 'en' ? 'english' : 'base');
-  }, [language]);
 
   const tileUrl = TILE_URLS[mapStyle] || TILE_URLS.base;
 
