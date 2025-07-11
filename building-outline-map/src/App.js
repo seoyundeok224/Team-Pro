@@ -12,8 +12,9 @@ function App() {
   const [showEmoji, setShowEmoji] = useState(true);
   const [mapStyle, setMapStyle] = useState('base');
   const [darkMode, setDarkMode] = useState(false);
-  const [user, setUser] = useState(null);
-  const [markerPosition, setMarkerPosition] = useState(null);
+  const [user, setUser] = useState(null); // 로그인 상태 관리
+
+
   const [searchQuery, setSearchQuery] = useState('');
 
 
@@ -21,7 +22,6 @@ function App() {
     document.body.style.backgroundColor = darkMode ? '#222' : '#fff';
     document.body.style.color = darkMode ? '#fff' : '#000';
   }, [darkMode]);
-
 
   return (
     <div className={`App ${darkMode ? 'dark' : ''}`}>
@@ -41,17 +41,15 @@ function App() {
           setSearchQuery={setSearchQuery}
         />
 
-        <div className="map_container">
-          <NaverMap markerPosition={markerPosition} setMarkerPosition={setMarkerPosition} />
-          <WeatherBar darkMode={darkMode}/> {/* ✅ 오른쪽 상단 날씨 상자 추가 */}
-
-    
+        <div className="map-container">
+          <NaverMap />
+          <WeatherBar darkMode={darkMode} />
         </div>
       </div>
       <Footer darkMode={darkMode} />
     </div>
     
   );
-  }
+}
 
 export default App;
