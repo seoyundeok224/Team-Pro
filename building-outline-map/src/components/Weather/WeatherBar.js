@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './WeatherBar.css';
 
-const API_KEY_1 = '84a4cfe7ca79fc9b0120217a7d5a2028';
+const API_KEY_1 = '84a4cfe7ca79fc9b0120217a7d5a2028'; // openweathermap API
 const API_KEY_2 = '018a628cfd0dc32361eef05ce0722e2d';
 const SUWON_COORDS ={
   lat: 37.2923,
