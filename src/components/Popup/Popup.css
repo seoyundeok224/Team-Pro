@@ -49,9 +49,3 @@
   display: flex;
   justify-content: right; /* 오른쪽 정렬 */
 }
-
-/* 지도 축소확대 버튼보다 앞 레이어에 오게 위치 지정 */
-.popup-overlay {
-  position: relative;     /* z-index 적용을 위해 필요 */
-  z-index: 1100 !important; /* Leaflet 컨트롤보다 위로 */
-}

@@ -3,11 +3,7 @@ import React, { useState } from 'react';
 // Sidebar 컴포넌트 정의
 const Sidebar = ({
   showEmoji, setShowEmoji,         // 마커 보이기/숨기기 상태 및 설정 함수
-  mapStyle, setMapStyle,           // 지도 스타일 (일반/위성) 상태 및 설정 함수
-  language, setLanguage,           // 언어 상태 및 설정 함수
-  setGeoData,                      // 업로드된 GeoJSON 데이터 설정 함수
   darkMode, setDarkMode,           // 다크 모드 상태 및 설정 함수
-  user, setUser,                   // 로그인 상태 및 설정 함수
   searchQuery, setSearchQuery      // 검색어 상태 및 설정 함수
 }) => {
   const [inputValue, setInputValue] = useState(''); // 내부 검색어 입력 상태
@@ -37,16 +33,6 @@ const Sidebar = ({
       <button className="search-button" onClick={handleSearch}>🔍 검색</button>
 
       <hr />
-
-      {/* 🏢 마커 보이기/숨기기 */}
-      <button onClick={() => setShowEmoji(!showEmoji)}>
-        {showEmoji ? '🏢 마커 숨기기' : '🏢 마커 보이기'}
-      </button>
-
-      {/* 🗺️ 지도 스타일 변경 */}
-      <h3>지도 스타일</h3>
-      <button onClick={() => setMapStyle('base')}>일반 지도</button>
-      <button onClick={() => setMapStyle('satellite')}>위성 지도</button>
 
       {/* 🌙 다크 모드 전환 */}
       <h3>다크 모드</h3>
