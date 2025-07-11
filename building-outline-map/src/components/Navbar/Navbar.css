@@ -24,13 +24,9 @@
   font-size: 24px;
 }
 
-/* 오른쪽 시계 및 날짜 영역 */
+/* 오른쪽 시계 영역 */
 .clock {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
   font-family: monospace;
   font-size: 18px;
   color: inherit; /* 부모에서 색상 상속 */
-  line-height: 1.4;
 }
