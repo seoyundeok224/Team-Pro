@@ -16,9 +16,6 @@ function NaverMap() {
     const script = document.createElement('script');
     script.id = scriptId;
     script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${NAVER_CLIENT_ID}`;
-    script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${NAVER_CLIENT_ID}&submodules=geocoder`;
-    script.src =`http://code.jquery.com/jquery-latest.min.js`;
-    script.src =`https://code.jquery.com/jquery-3.6.0.min.js`;
     script.async = true;
     script.defer = true;
     script.onload = initializeMap;

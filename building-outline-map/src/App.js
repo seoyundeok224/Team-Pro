@@ -15,7 +15,8 @@ function App() {
   const [user, setUser] = useState(null); // 로그인 상태 관리
 
 
-  const [searchQuery, setSearchQuery] = useState(''); // 검색어 상태 관리
+  const [searchQuery, setSearchQuery] = useState('');
+
 
   useEffect(() => {
     document.body.style.backgroundColor = darkMode ? '#222' : '#fff';
@@ -43,8 +44,6 @@ function App() {
 
         <div className="map-container">
           <NaverMap />
-        </div>
-        <div className='weather-container'>
           <WeatherBar darkMode={darkMode} />
         </div>
       </div>
