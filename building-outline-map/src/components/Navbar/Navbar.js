@@ -1,45 +1,43 @@
 import React, { useEffect, useState } from 'react';
-import './Navbar.css'; // CSS 스타일을 불러옴
+import './Navbar.css';
 
-// Navbar 컴포넌트 정의
 const Navbar = ({ darkMode }) => {
-  // 현재 시간을 저장할 상태
+  // 현재 시간 상태 관리
   const [time, setTime] = useState(new Date());
 
-  // 선택한 날짜를 저장할 상태
-  const [selectedDate, setSelectedDate] = useState('');
-
-  // 컴포넌트가 마운트될 때 1초마다 시간 업데이트
   useEffect(() => {
+    // 1초마다 현재 시간 업데이트
     const timer = setInterval(() => {
-      setTime(new Date()); // 새로운 시간으로 갱신
+      setTime(new Date());
     }, 1000);
 
     // 컴포넌트 언마운트 시 타이머 정리
     return () => clearInterval(timer);
   }, []);
 
-  // 시간 형식 (ex. 15:32:10)
+  // 시계용 시간 문자열 (예: 14:30:59)
   const formattedTime = time.toLocaleTimeString();
 
+  // 달력용 날짜 문자열 (예: 2025년 7월 11일 금요일)
+  const formattedDate = time.toLocaleDateString('ko-KR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    weekday: 'long',
+  });
+
   return (
-    // 다크모드 여부에 따라 클래스 적용
     <nav className={`navbar ${darkMode ? 'nav-dark' : 'nav-light'}`}>
-      {/* 로고 영역 */}
+      {/* 왼쪽 로고 영역 */}
       <div className="logo">🗺️ 내 지도 앱</div>
 
-      {/* 시계 + 달력 우측 영역 */}
+      {/* 오른쪽 시계 + 달력 묶음 */}
       <div className="right-section">
-        {/* 실시간 시계 표시 */}
-        <div className="clock">{formattedTime}</div>
+        {/* 달력 날짜 표시 */}
+        <div className="date">{formattedDate}</div>
 
-        {/* 달력 입력창 (input type="date") */}
-        <input
-          type="date"
-          className="calendar"
-          value={selectedDate}
-          onChange={(e) => setSelectedDate(e.target.value)} // 날짜 선택 시 상태 갱신
-        />
+        {/* 시계 */}
+        <div className="clock">{formattedTime}</div>
       </div>
     </nav>
   );

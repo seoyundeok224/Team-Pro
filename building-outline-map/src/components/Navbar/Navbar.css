@@ -11,12 +11,12 @@
 
 /* 🧱 네비게이션 바 전체 레이아웃 */
 .navbar {
-  display: flex;                /* 내부 요소 가로 정렬 */
-  justify-content: space-between; /* 좌우 정렬 */
-  align-items: center;          /* 수직 가운데 정렬 */
-  padding: 10px 20px;           /* 안쪽 여백 */
-  font-size: 20px;              /* 기본 텍스트 크기 */
-  font-weight: bold;            /* 굵은 텍스트 */
+  display: flex;                 /* 내부 요소 가로 정렬 */
+  justify-content: space-between; /* 좌우 끝 정렬 */
+  align-items: center;           /* 수직 가운데 정렬 */
+  padding: 10px 20px;            /* 안쪽 여백 */
+  font-size: 20px;               /* 기본 텍스트 크기 */
+  font-weight: bold;             /* 굵은 텍스트 */
 }
 
 /* 🗺️ 왼쪽 로고 영역 */
@@ -24,26 +24,22 @@
   font-size: 24px;
 }
 
+/* 📦 시계 + 달력 묶음 */
+.right-section {
+  display: flex;                /* 가로 나열 */
+  align-items: center;          /* 수직 가운데 정렬 */
+  gap: 10px;                   /* 시계와 달력 사이 간격 */
+}
+
+/* 📅 달력 날짜 스타일 */
+.date {
+  font-size: 16px;
+  font-weight: normal;
+}
+
 /* ⏲️ 오른쪽 시계 영역 */
 .clock {
   font-family: monospace;       /* 고정폭 글꼴 */
   font-size: 18px;
   color: inherit;               /* 부모 요소에서 색상 상속 */
-}
-
-/* 📦 시계 + 달력 묶음 */
-.right-section {
-  display: flex;                /* 가로 나열 */
-  align-items: center;
-  gap: 10px;                    /* 시계와 달력 사이 간격 */
-}
-
-/* 📅 달력 input 스타일 */
-.calendar {
-  padding: 5px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: white;
-  color: black;
 }
