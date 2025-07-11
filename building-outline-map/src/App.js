@@ -16,7 +16,7 @@ function App() {
   const [mapStyle, setMapStyle] = useState('base');
   const [darkMode, setDarkMode] = useState(false);
   const [user, setUser] = useState(null);
-
+  const [markerPosition, setMarkerPosition] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
 
@@ -53,7 +53,7 @@ function App() {
         />
 
         <div className="map_container">
-          <NaverMap />
+          <NaverMap markerPosition={markerPosition} setMarkerPosition={setMarkerPosition} />
           <WeatherBar darkMode={darkMode}/> {/* ✅ 오른쪽 상단 날씨 상자 추가 */}
         </div>
       </div>
