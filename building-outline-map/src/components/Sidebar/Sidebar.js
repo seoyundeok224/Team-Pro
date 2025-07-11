@@ -51,7 +51,7 @@ const Sidebar = ({
       console.log(`📍 위도: ${lat}, 경도: ${lon}`);
     } catch (error) {
       console.error('주소 검색 실패:', error);
-      alert('검색 중 오류가 발생했습니다.');
+      alert('검색한 주소가 없습니다.');
     }
   };
 
