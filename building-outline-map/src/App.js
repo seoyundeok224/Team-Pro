@@ -43,7 +43,10 @@ function App() {
 
         <div className="map-container">
           <NaverMap />
-          <WeatherBar darkMode={darkMode} />
+          <WeatherBar 
+            darkMode={darkMode} 
+            searchQuery={searchQuery}
+          />
         </div>
       </div>
       <Footer darkMode={darkMode} />
