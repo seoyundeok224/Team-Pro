@@ -1,47 +1,110 @@
 import React, { useState } from 'react';
 
-// Sidebar 컴포넌트 정의
 const Sidebar = ({
-  showEmoji, setShowEmoji,         // 마커 보이기/숨기기 상태 및 설정 함수
-  darkMode, setDarkMode,           // 다크 모드 상태 및 설정 함수
-  searchQuery, setSearchQuery      // 검색어 상태 및 설정 함수
+  showEmoji, setShowEmoji,
+  darkMode, setDarkMode,
+  searchQuery, setSearchQuery
 }) => {
-  const [inputValue, setInputValue] = useState(''); // 내부 검색어 입력 상태
+  const [inputValue, setInputValue] = useState('');
+  const [searchHistory, setSearchHistory] = useState([]);
 
-  // ⌨️ 검색 버튼 클릭 또는 Enter 입력 시 호출되는 함수
-  // 도시나 지역 이름을 입력하고 검색하면 지도 중심이 해당 위치로 이동합니다.
+  // ⌨️ 검색 실행 함수
   const handleSearch = () => {
-    if (inputValue.trim() !== '') {
-      setSearchQuery(inputValue);  // 검색어 상태 업데이트 (MainMap에서 처리)
+    const trimmedInput = inputValue.trim();
+    if (trimmedInput !== '') {
+      setSearchQuery(trimmedInput); // 검색어 상태 설정
+
+      // 🧠 중복 제거 + 최근 항목 추가
+      setSearchHistory((prevHistory) => {
+        const updatedHistory = [trimmedInput, ...prevHistory.filter(item => item !== trimmedInput)];
+        return updatedHistory.slice(0, 5); // 최대 5개 유지
+      });
+
+      setInputValue(''); // 입력창 초기화
     }
   };
 
+  // 🗑️ 특정 검색어 삭제 함수
+  const handleDeleteKeyword = (keyword) => {
+    setSearchHistory(prev => prev.filter((item) => item !== keyword));
+  };
+
   return (
-    <div className={`sidebar ${darkMode ? 'dark' : ''}`}> {/* 다크 모드 적용 */}
+    <div className={`sidebar ${darkMode ? 'dark' : ''}`}>
       <h2>🛠️ 기능 메뉴</h2>
 
-      {/* 🔍 위치 검색: 도시나 지역 이름을 입력하고 검색하면 지도 중심이 이동합니다 */}
+      {/* 🔍 위치 검색 */}
       <h3>위치 검색</h3>
       <input
         type="text"
         className="search-input"
-        placeholder="도시나 지역 이름을 입력하세요" // 예: 서울, 부산, 제주 등
+        placeholder="도시나 지역 이름을 입력하세요"
         value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)} // 입력값 상태 업데이트
-        onKeyDown={(e) => e.key === 'Enter' && handleSearch()} // Enter 시 검색 실행
+        onChange={(e) => setInputValue(e.target.value)}
+        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
       />
       <button className="search-button" onClick={handleSearch}>🔍 검색</button>
 
+      {/* 📜 최근 검색어 표시 */}
+      {searchHistory.length > 0 && (
+        <>
+          <h4>최근 검색어</h4>
+          <ul className="search-history">
+            {searchHistory.map((item, index) => (
+              <li
+                key={index}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '4px'
+                }}
+              >
+                <span
+                  onClick={() => {
+                    setInputValue(item);       // 입력창에 표시
+                    setSearchQuery(item);      // 검색 실행
+                  }}
+                  style={{ cursor: 'pointer' }}
+                >
+                  🔁 {item}
+                </span>
+                <button
+                  onClick={() => handleDeleteKeyword(item)} // 해당 검색어 삭제
+                  style={{
+                    marginLeft: '10px',
+                    backgroundColor: 'transparent',
+                    border: 'none',
+                    color: 'red',
+                    cursor: 'pointer'
+                  }}
+                  title="삭제"
+                >
+                  ❌
+                </button>
+              </li>
+            ))}
+          </ul>
+          {/* 🔄 전체 검색어 기록 삭제 */}
+          <button
+            onClick={() => setSearchHistory([])}
+            style={{ marginTop: '10px' }}
+          >
+            🧹 전체 기록 삭제
+          </button>
+        </>
+      )}
+
       <hr />
 
-      {/* 🌙 다크 모드 전환 */}
+      {/* 🌙 다크 모드 */}
       <h3>다크 모드</h3>
       <button onClick={() => setDarkMode(!darkMode)}>
         {darkMode ? '💡 라이트 모드' : '🌙 다크 모드'}
       </button>
 
+      {/* 🔄 초기화 */}
       <h3>초기화</h3>
-      {/* 🔄 초기화 (전체 페이지 새로고침) */}
       <button onClick={() => window.location.reload()}>🔄 초기화</button>
     </div>
   );
