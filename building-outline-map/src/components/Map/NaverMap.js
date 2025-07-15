@@ -62,7 +62,7 @@ function NaverMap({ searchQuery }) {
   }, []);
 
   useEffect(() => {
-    if (!searchQuery || !window.naver || !mapInstance.current) return;
+    if (!searchQuery ||  !window.naver?.maps?.services || !mapInstance.current) return;
 
     const geocoder = new window.naver.maps.services.Geocoder();
     geocoder.addressSearch(searchQuery, function (result, status) {
