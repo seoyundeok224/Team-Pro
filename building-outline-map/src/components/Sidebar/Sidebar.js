@@ -26,8 +26,8 @@ const Sidebar = ({
         type="text"
         className="search-input"
         placeholder="도시나 지역 이름을 입력하세요" // 예: 서울, 부산, 제주 등
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)} // 입력값 상태 업데이트
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)} // 입력값 상태 업데이트
         onKeyDown={(e) => e.key === 'Enter' && handleSearch()} // Enter 시 검색 실행
       />
       <button className="search-button" onClick={handleSearch}>🔍 검색</button>
