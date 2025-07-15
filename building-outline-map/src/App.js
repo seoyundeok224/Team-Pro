@@ -28,7 +28,7 @@ function App() {
       <Popup />
       <Navbar darkMode={darkMode} />
       <div className="main-layout">
-        <Sidebar
+        <Sidebar onSearch={(query) => setSearchQuery(query)}
           showEmoji={showEmoji}
           setShowEmoji={setShowEmoji}
           mapStyle={mapStyle}
@@ -42,7 +42,7 @@ function App() {
         />
 
         <div className="map-container">
-          <NaverMap />
+          <NaverMap searchQuery={searchQuery} />
           <WeatherBar 
             darkMode={darkMode} 
             searchQuery={searchQuery}
