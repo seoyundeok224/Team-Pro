@@ -19,7 +19,7 @@ function NaverMap({ searchQuery }) {
     const script = document.createElement('script');
     script.id = scriptId;
     script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${NAVER_CLIENT_ID}`;
-    script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${NAVER_CLIENT_ID}_ID&submodules=geocoder`
+    script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${NAVER_CLIENT_ID}&submodules=geocoder`;
     script.async = true;
     script.defer = true;
     script.onload = initializeMap;
