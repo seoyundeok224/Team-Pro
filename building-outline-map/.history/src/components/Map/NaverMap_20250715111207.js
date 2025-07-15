@@ -1,5 +1,4 @@
-// ✅ 이 줄 반드시 필요!
-import React, { useEffect, useRef } from 'react'; 
+import React, { useEffect, useRef } from 'react';
 
 const NAVER_CLIENT_ID = process.env.REACT_APP_NAVER_ID;
 
@@ -73,7 +72,7 @@ function NaverMap({ searchQuery }) {
         !mapInstance.current
       ) {
         console.warn('Geocoder 또는 Map이 아직 준비되지 않음. 재시도 예정...');
-        setTimeout(tryGeocode, 300);
+        setTimeout(tryGeocode, 300); // 0.3초 후 재시도
         return;
       }
 
@@ -103,5 +102,4 @@ function NaverMap({ searchQuery }) {
   return <div className="map-container" ref={mapRef} />;
 }
 
-// ✅ export 빠지면 App.js에서 인식 못 함
 export default NaverMap;

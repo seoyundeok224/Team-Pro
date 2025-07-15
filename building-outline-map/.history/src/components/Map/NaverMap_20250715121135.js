@@ -1,11 +1,11 @@
-// ✅ 이 줄 반드시 필요!
-import React, { useEffect, useRef } from 'react'; 
+import React, { useEffect, useRef } from 'react';
 
-const NAVER_CLIENT_ID = process.env.REACT_APP_NAVER_ID;
+const NAVER_CLIENT_ID = process.env.REACT_APP_NAVER_MAP_KEY;
 
 function NaverMap({ searchQuery }) {
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
+  const geocoderRef = useRef(null);
 
   useEffect(() => {
     const scriptId = 'naver-map-script';
@@ -46,13 +46,22 @@ function NaverMap({ searchQuery }) {
             },
           };
 
-          mapInstance.current = new window.naver.maps.Map(mapRef.current, mapOptions);
+          const map = new window.naver.maps.Map(mapRef.current, mapOptions);
+          mapInstance.current = map;
 
           new window.naver.maps.Marker({
             position: userLocation,
-            map: mapInstance.current,
+            map,
             title: '현재 위치',
           });
+
+          // Geocoder 초기화
+          geocoderRef.current = new window.naver.maps.services.Geocoder();
+
+          // 초기화 이후 geocode 실행 (searchQuery가 있는 경우)
+          if (searchQuery) {
+            handleGeocode(searchQuery);
+          }
         },
         (error) => {
           console.error('위치 정보 가져오기 실패:', error);
@@ -62,46 +71,30 @@ function NaverMap({ searchQuery }) {
   }, []);
 
   useEffect(() => {
-    if (!searchQuery) return;
-
-    const tryGeocode = () => {
-      if (
-        !window.naver ||
-        !window.naver.maps ||
-        !window.naver.maps.services ||
-        typeof window.naver.maps.services.Geocoder !== 'function' ||
-        !mapInstance.current
-      ) {
-        console.warn('Geocoder 또는 Map이 아직 준비되지 않음. 재시도 예정...');
-        setTimeout(tryGeocode, 300);
-        return;
-      }
-
-      const geocoder = new window.naver.maps.services.Geocoder();
-      geocoder.addressSearch(searchQuery, (result, status) => {
-        console.log('지오코딩 결과:', result);
-
-        if (status === window.naver.maps.services.Status.OK && result[0]) {
-          const { y, x } = result[0];
-          const newLatLng = new window.naver.maps.LatLng(y, x);
-          mapInstance.current.setCenter(newLatLng);
-
-          new window.naver.maps.Marker({
-            position: newLatLng,
-            map: mapInstance.current,
-            title: searchQuery,
-          });
-        } else {
-          console.error('주소 검색 실패 또는 결과 없음:', status, result);
-        }
-      });
-    };
-
-    tryGeocode();
+    if (!searchQuery || !geocoderRef.current || !mapInstance.current) return;
+    handleGeocode(searchQuery);
   }, [searchQuery]);
+
+  function handleGeocode(query) {
+    geocoderRef.current.addressSearch(query, (result, status) => {
+      if (status === window.naver.maps.services.Status.OK && result[0]) {
+        const { y, x } = result[0];
+        const newLatLng = new window.naver.maps.LatLng(y, x);
+        mapInstance.current.setCenter(newLatLng);
+
+        new window.naver.maps.Marker({
+          position: newLatLng,
+          map: mapInstance.current,
+          title: query,
+        });
+      } else {
+        alert('해당 지역을 찾을 수 없습니다.');
+        console.error('주소 검색 실패:', status, result);
+      }
+    });
+  }
 
   return <div className="map-container" ref={mapRef} />;
 }
 
-// ✅ export 빠지면 App.js에서 인식 못 함
 export default NaverMap;
