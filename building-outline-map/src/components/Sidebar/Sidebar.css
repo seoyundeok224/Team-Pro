@@ -1,4 +1,4 @@
-/* 전체 사이드바 영역 */
+/* 📦 전체 사이드바 영역 */
 .sidebar {
   width: 350px;
   background-color: rgba(0, 0, 0, 0.1);
@@ -12,20 +12,20 @@
   transition: width 0.3s ease;
 }
 
-/* 사이드바 접혔을 때 너비 축소 */
+/* ➖ 사이드바 접혔을 때 스타일 */
 .sidebar.collapsed {
   width: 40px;
   padding: 20px 6px;
   overflow: visible;
 }
 
-/* 다크 모드 배경 및 글자색 */
+/* 🌙 다크 모드 배경 및 기본 텍스트 색상 */
 .sidebar.dark {
   background-color: #111;
   color: white;
 }
 
-/* 사이드바 접기/펼치기 버튼 */
+/* 🔘 사이드바 접기/펼치기 버튼 */
 .collapse-button {
   position: absolute;
   top: 2px;
@@ -47,13 +47,13 @@
   background-color: #444;
 }
 
-/* 입력창 감싸는 wrapper */
+/* 🔍 검색 입력창 wrapper */
 .input-wrapper {
   position: relative;
   width: 100%;
 }
 
-/* 검색 입력창 스타일 */
+/* 🔍 검색 입력창 스타일 */
 .search-input {
   width: 100%;
   padding: 8px 36px 8px 12px;
@@ -64,17 +64,17 @@
   box-sizing: border-box;
 }
 
-/* 입력 클리어 버튼 */
+/* ❌ 입력 클리어 버튼 */
 .clear-input-btn {
   position: absolute;
   right: 10px;
-  top: 50%;
+  top: 40%;
   transform: translateY(-50%);
   border: none;
-  background: transparent;
+  background: transparent !important; /* 다크모드에서도 투명하게 유지 */
   cursor: pointer;
-  font-size: 20px;
-  color: #999;
+  font-size: 18px;
+  color: #000000;
   padding: 0;
   user-select: none;
 }
@@ -83,7 +83,7 @@
   color: #555;
 }
 
-/* 자동완성 리스트 */
+/* 📋 자동완성 리스트 */
 .autocomplete-list {
   list-style: none;
   margin: 0;
@@ -100,7 +100,7 @@
   border-radius: 0 0 4px 4px;
 }
 
-/* 자동완성 항목 */
+/* 📋 자동완성 항목 */
 .autocomplete-item {
   padding: 8px 12px;
   cursor: pointer;
@@ -114,7 +114,7 @@
   outline: none;
 }
 
-/* 검색 버튼 */
+/* 🔍 검색 버튼 */
 .search-button {
   width: 100%;
   padding: 10px 12px;
@@ -131,14 +131,14 @@
   transform: scale(0.95);
 }
 
-/* 오류 메시지 */
+/* ⚠️ 오류 메시지 스타일 */
 .error-message {
   color: red;
   font-size: 14px;
   margin-bottom: 14px;
 }
 
-/* 최근 검색어 리스트 */
+/* 🕓 최근 검색어 리스트 */
 .search-history {
   list-style: none;
   padding: 0 6px;
@@ -147,7 +147,7 @@
   overflow-y: auto;
 }
 
-/* 최근 검색어 아이템 */
+/* 🕓 최근 검색어 항목 */
 .search-item {
   display: flex;
   justify-content: space-between;
@@ -159,7 +159,7 @@
   transition: opacity 0.3s ease;
 }
 
-/* 검색어 텍스트 */
+/* 🔁 검색어 텍스트 */
 .search-keyword {
   cursor: pointer;
   user-select: text;
@@ -167,14 +167,14 @@
   padding-right: 6px;
 }
 
-/* 즐겨찾기 버튼 */
+/* ⭐ 즐겨찾기 버튼 */
 .fav-btn {
-  margin-left: 8px;
+  margin-left: 10px;
   background: transparent;
   border: none;
   cursor: pointer;
   font-size: 20px;
-  color: gold;
+  color: rgb(255, 153, 0); /* 노란색 고정 */
   user-select: none;
   transition: transform 0.2s ease;
 }
@@ -183,7 +183,7 @@
   transform: scale(1.2);
 }
 
-/* 삭제 버튼 */
+/* ❌ 개별 삭제 버튼 */
 .delete-btn {
   margin-left: 5px;
   background: transparent;
@@ -199,7 +199,7 @@
   transform: scale(1.2);
 }
 
-/* 전체 검색 기록 삭제 버튼 */
+/* 🧹 전체 검색 기록 삭제 버튼 */
 .clear-history-btn {
   width: 100%;
   padding: 10px 12px;
@@ -216,7 +216,7 @@
   background-color: #ccc;
 }
 
-/* 최근 검색어 토글 버튼 */
+/* 🪄 최근 검색어 토글 버튼 */
 .toggle-history-btn {
   width: 100%;
   padding: 8px 12px;
@@ -234,13 +234,13 @@
   background-color: #bbb;
 }
 
-/* 다크모드 전체 버튼 색상 통일 */
+/* 🌙 다크모드: 모든 버튼 공통 배경 및 텍스트 */
 .sidebar.dark button {
   background-color: #333;
   color: white;
 }
 
-/* 다크모드 - 최근검색어 토글 버튼 */
+/* 🌙 다크모드: 최근 검색어 토글 버튼 스타일 */
 .sidebar.dark .toggle-history-btn {
   background-color: #555;
   color: white;
@@ -250,7 +250,27 @@
   background-color: #666;
 }
 
-/* ✅ 다크모드 + 초기화 버튼 묶는 컨테이너 */
+/* 🌙 다크모드: 전체 기록 삭제 버튼 */
+.sidebar.dark .clear-history-btn {
+  color: white;
+  background-color: #555;
+}
+
+.sidebar.dark .clear-history-btn:hover {
+  background-color: #666;
+}
+
+/* 🌙 다크모드: 즐겨찾기 버튼은 항상 주황색 유지 */
+.sidebar.dark .fav-btn {
+  color: rgb(255, 153, 0) !important;
+}
+
+/* 🌙 다크모드: 클리어(✕) 버튼은 검정색 유지 */
+.sidebar.dark .clear-input-btn {
+  color: black !important;
+}
+
+/* ⚙️ 다크모드 & 초기화 버튼 묶는 컨테이너 */
 .top-controls {
   display: flex;
   justify-content: space-between;
@@ -258,7 +278,7 @@
   margin-bottom: 16px;
 }
 
-/* ✅ 다크모드 버튼과 초기화 버튼 공통 스타일 */
+/* ⚙️ 모드 전환 및 초기화 버튼 */
 .toggle-darkmode-btn,
 .reset-page-btn {
   flex: 1;
@@ -277,7 +297,7 @@
   background-color: #bbb;
 }
 
-/* ✅ 다크모드 시 해당 버튼 색상 변경 */
+/* 🌙 다크모드 시 모드/초기화 버튼 */
 .sidebar.dark .toggle-darkmode-btn,
 .sidebar.dark .reset-page-btn {
   background-color: #555;
