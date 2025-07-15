@@ -62,20 +62,29 @@ function NaverMap({ searchQuery }) {
   }, []);
 
   useEffect(() => {
-    if (!searchQuery || 
-        !window.naver?.maps?.services || 
+    if (!searchQuery) return;
+
+    const tryGeocode = () => {
+      if (
+        !window.naver ||
+        !window.naver.maps ||
+        !window.naver.maps.services ||
         typeof window.naver.maps.services.Geocoder !== 'function' ||
         !mapInstance.current
       ) {
+        console.warn('Geocoder 또는 Map이 아직 준비되지 않음. 재시도 예정...');
+        setTimeout(tryGeocode, 300);
         return;
       }
 
-    const geocoder = new window.naver.maps.services.Geocoder();
-    geocoder.addressSearch(searchQuery, (result, status) => {
-      if (status === window.naver.maps.services.Status.OK) {
-        const { y, x } = result[0];
-        const newLatLng = new window.naver.maps.LatLng(y, x);
-        mapInstance.current.setCenter(newLatLng);
+      const geocoder = new window.naver.maps.services.Geocoder();
+      geocoder.addressSearch(searchQuery, (result, status) => {
+        console.log('지오코딩 결과:', result);
+
+        if (status === window.naver.maps.services.Status.OK && result[0]) {
+          const { y, x } = result[0];
+          const newLatLng = new window.naver.maps.LatLng(y, x);
+          mapInstance.current.setCenter(newLatLng);
 
           new window.naver.maps.Marker({
             position: newLatLng,
