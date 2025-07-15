@@ -23,7 +23,6 @@ function App() {
     document.body.style.color = darkMode ? '#fff' : '#000';
   }, [darkMode]);
 
-
   return (
     <div className={`App ${darkMode ? 'dark' : ''}`}>
       <Popup />
@@ -44,12 +43,16 @@ function App() {
 
         <div className="map-container">
           <NaverMap />
-          <WeatherBar darkMode={darkMode} />
+          <WeatherBar 
+            darkMode={darkMode} 
+            searchQuery={searchQuery}
+          />
         </div>
       </div>
       <Footer darkMode={darkMode} />
     </div>
+    
   );
-}
+  }
 
 export default App;
