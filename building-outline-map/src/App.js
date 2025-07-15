@@ -23,13 +23,12 @@ function App() {
     document.body.style.color = darkMode ? '#fff' : '#000';
   }, [darkMode]);
 
-
   return (
     <div className={`App ${darkMode ? 'dark' : ''}`}>
       <Popup />
       <Navbar darkMode={darkMode} />
       <div className="main-layout">
-        <Sidebar
+        <Sidebar onSearch={(query) => setSearchQuery(query)}
           showEmoji={showEmoji}
           setShowEmoji={setShowEmoji}
           mapStyle={mapStyle}
@@ -43,13 +42,17 @@ function App() {
         />
 
         <div className="map-container">
-          <NaverMap />
-          <WeatherBar darkMode={darkMode} />
+          <NaverMap searchQuery={searchQuery} />
+          <WeatherBar 
+            darkMode={darkMode} 
+            searchQuery={searchQuery}
+          />
         </div>
       </div>
       <Footer darkMode={darkMode} />
     </div>
+    
   );
-}
+  }
 
 export default App;

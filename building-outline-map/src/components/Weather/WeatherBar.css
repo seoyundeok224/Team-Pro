@@ -1,38 +1,21 @@
-.whea-dark.weather-placeBar {
-  background-color: #222 !important; 
-  color: white !important;
-}
-
-.whea-light.weather-placeBar {
-  background-color: #f1f1f1 !important;
-  color: #333 !important;
-}
-
-.whea-dark .weather-section {
-  background-color: #333;
-  color: #eee;
-}
-
-.whea-light .weather-section {
-  background-color: #f5f5f5;
-  color: #333;
-}
-
-.whea-dark .weather-section h4 {
-  color: #ccc;
-}
-
-.whea-light .weather-section h4 {
-  color: #333;
-}
-
-.weather-placeBar {
-  position: absolute;
-  top: 80px;
-  right: 10px;
-  width: 280px;
-  height: 400px;
+.weather-placeBar.light {
   background-color: rgba(255, 255, 255, 0.95);
+  color: #333;
+  border: 2px solid #ccc;
+}
+
+.weather-placeBar.dark {
+  background-color: rgba(30, 30, 30, 0.95);
+  color: #f0f0f0;
+  border: 2px solid #444;
+}
+
+ .weather-placeBar { 
+  position: absolute; 
+  top: 80px; 
+  right: 10px;
+  width: 380px;
+  height: 400px;
   border: 2px solid #ccc;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
@@ -45,26 +28,48 @@
   overflow-y: auto;
 }
 
-.weather-section {
-  background-color: #f5f5f5;
-  border-radius: 8px;
-  padding: 23px;
-  box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+.weather-card {
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 16px; 
+  background: white;
+  color: #222;
 }
 
-.weather-placeBar h3 {
-  text-align: center;
+.weather-placeBar.dark .weather-card {
+  background-color: #2c2c2c;
+  color: #f0f0f0;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
 }
 
-.weather-section h4 {
-  font-size: 14px;
-  margin-bottom: 6px;
-  color: #333;
-}
-
-.weather-content {
+.today-content {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 13px;
+  align-items: center;
+  gap: 10px;
+}
+
+.temp {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.hourly-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 8px;
+  padding-top: 8px;
+}
+
+.hourly-card {
+  min-width: 60px;
+  text-align: center;
+  background: #f1f1f1;
+  border-radius: 8px;
+  padding: 8px;
+  color: #222;
+}
+
+.weather-placeBar.dark .hourly-card {
+  background: #444;
+  color: #eee;
 }
