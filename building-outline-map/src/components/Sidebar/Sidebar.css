@@ -53,7 +53,7 @@
   width: 100%;
 }
 
-/* 🔍 검색 입력창 스타일 */
+/* 검색 입력창 스타일 */
 .search-input {
   width: 100%;
   padding: 8px 36px 8px 12px;
@@ -64,14 +64,14 @@
   box-sizing: border-box;
 }
 
-/* ❌ 입력 클리어 버튼 */
+/* 입력 클리어 버튼 */
 .clear-input-btn {
   position: absolute;
   right: 10px;
   top: 40%;
   transform: translateY(-50%);
   border: none;
-  background: transparent !important; /* 다크모드에서도 투명하게 유지 */
+  background: transparent;
   cursor: pointer;
   font-size: 18px;
   color: #000000;
@@ -83,7 +83,7 @@
   color: #555;
 }
 
-/* 📋 자동완성 리스트 */
+/* 자동완성 리스트 */
 .autocomplete-list {
   list-style: none;
   margin: 0;
@@ -100,7 +100,7 @@
   border-radius: 0 0 4px 4px;
 }
 
-/* 📋 자동완성 항목 */
+/* 자동완성 항목 */
 .autocomplete-item {
   padding: 8px 12px;
   cursor: pointer;
@@ -114,7 +114,7 @@
   outline: none;
 }
 
-/* 🔍 검색 버튼 */
+/* 검색 버튼 */
 .search-button {
   width: 100%;
   padding: 10px 12px;
@@ -131,7 +131,7 @@
   transform: scale(0.95);
 }
 
-/* ⚠️ 오류 메시지 스타일 */
+/* 오류 메시지 */
 .error-message {
   color: red;
   font-size: 14px;
@@ -147,7 +147,7 @@
   overflow-y: auto;
 }
 
-/* 🕓 최근 검색어 항목 */
+/* 최근 검색어 아이템 */
 .search-item {
   display: flex;
   justify-content: space-between;
@@ -159,7 +159,7 @@
   transition: opacity 0.3s ease;
 }
 
-/* 🔁 검색어 텍스트 */
+/* 검색어 텍스트 */
 .search-keyword {
   cursor: pointer;
   user-select: text;
@@ -174,7 +174,7 @@
   border: none;
   cursor: pointer;
   font-size: 20px;
-  color: rgb(255, 153, 0); /* 노란색 고정 */
+  color: gold;
   user-select: none;
   transition: transform 0.2s ease;
 }
@@ -216,7 +216,7 @@
   background-color: #ccc;
 }
 
-/* 🪄 최근 검색어 토글 버튼 */
+/* 최근 검색어 토글 버튼 */
 .toggle-history-btn {
   width: 100%;
   padding: 8px 12px;
@@ -234,13 +234,13 @@
   background-color: #bbb;
 }
 
-/* 🌙 다크모드: 모든 버튼 공통 배경 및 텍스트 */
+/* 다크모드 전체 버튼 색상 통일 */
 .sidebar.dark button {
   background-color: #333;
   color: white;
 }
 
-/* 🌙 다크모드: 최근 검색어 토글 버튼 스타일 */
+/* 다크모드 - 최근검색어 토글 버튼 */
 .sidebar.dark .toggle-history-btn {
   background-color: #555;
   color: white;
@@ -250,27 +250,7 @@
   background-color: #666;
 }
 
-/* 🌙 다크모드: 전체 기록 삭제 버튼 */
-.sidebar.dark .clear-history-btn {
-  color: white;
-  background-color: #555;
-}
-
-.sidebar.dark .clear-history-btn:hover {
-  background-color: #666;
-}
-
-/* 🌙 다크모드: 즐겨찾기 버튼은 항상 주황색 유지 */
-.sidebar.dark .fav-btn {
-  color: rgb(255, 153, 0) !important;
-}
-
-/* 🌙 다크모드: 클리어(✕) 버튼은 검정색 유지 */
-.sidebar.dark .clear-input-btn {
-  color: black !important;
-}
-
-/* ⚙️ 다크모드 & 초기화 버튼 묶는 컨테이너 */
+/* ✅ 다크모드 + 초기화 버튼 묶는 컨테이너 */
 .top-controls {
   display: flex;
   justify-content: space-between;
@@ -278,7 +258,7 @@
   margin-bottom: 16px;
 }
 
-/* ⚙️ 모드 전환 및 초기화 버튼 */
+/* ✅ 다크모드 버튼과 초기화 버튼 공통 스타일 */
 .toggle-darkmode-btn,
 .reset-page-btn {
   flex: 1;
@@ -297,7 +277,7 @@
   background-color: #bbb;
 }
 
-/* 🌙 다크모드 시 모드/초기화 버튼 */
+/* ✅ 다크모드 시 해당 버튼 색상 변경 */
 .sidebar.dark .toggle-darkmode-btn,
 .sidebar.dark .reset-page-btn {
   background-color: #555;
