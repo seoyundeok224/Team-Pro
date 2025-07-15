@@ -62,10 +62,16 @@ function NaverMap({ searchQuery }) {
   }, []);
 
   useEffect(() => {
-    if (!searchQuery ||  !window.naver?.maps?.services || !mapInstance.current) return;
+    if (!searchQuery || 
+        !window.naver?.maps?.services || 
+        typeof window.naver.maps.services.Geocoder !== 'function' ||
+        !mapInstance.current
+      ) {
+        return;
+      }
 
     const geocoder = new window.naver.maps.services.Geocoder();
-    geocoder.addressSearch(searchQuery, function (result, status) {
+    geocoder.addressSearch(searchQuery, (result, status) => {
       if (status === window.naver.maps.services.Status.OK) {
         const { y, x } = result[0];
         const newLatLng = new window.naver.maps.LatLng(y, x);
