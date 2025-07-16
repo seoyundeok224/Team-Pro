@@ -95,12 +95,23 @@ function NaverMap({ searchQuery }) {
           return;
         }
 
-        const result = response.v2.addresses[0];
-        if (!result) {
+        // 주소를 반환하여 지도에 표시 할 마커가 있는 경우 alert X.
+        if (!response?.v2?.addresses || 
+          response.v2.addresses.length === 0 || 
+          !response.v2.addresses[0]) {
           alert('검색 결과 없음');
           return;
         }
 
+        const result = response.v2.addresses[0];
+        
+        // 원본 코드: 검색 결과가 있음에도 alert가 발생
+        // const result = response.v2.addresses[0];
+        // if (!result) {
+        //   alert('검색 결과 없음');
+        //   return;
+        // }
+        
         const lat = parseFloat(result.y);
         const lng = parseFloat(result.x);
         const location = new window.naver.maps.LatLng(lat, lng);
