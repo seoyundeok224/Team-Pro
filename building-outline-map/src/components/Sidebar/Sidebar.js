@@ -7,9 +7,14 @@ const Sidebar = ({
   setShowEmoji,
   darkMode,
   setDarkMode,
+<<<<<<< HEAD
   searchQuery, 
+=======
+  searchQuery,
+>>>>>>> 631e518511f902b0ae8f9046f691123c0be7b9fc
   setSearchQuery
 }) => {
+
   // 입력값 상태
   const [inputValue, setInputValue] = useState('');
 
