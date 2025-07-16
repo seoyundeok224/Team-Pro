@@ -1,37 +1,43 @@
-// ✅ 이 줄 반드시 필요!
-import React, { useEffect, useRef } from 'react'; 
+import React, { useEffect, useRef, useState } from 'react';
 
 const NAVER_CLIENT_ID = process.env.REACT_APP_NAVER_ID;
 
 function NaverMap({ searchQuery }) {
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
+  const markerRef = useRef(null);
+  const [isMapReady, setIsMapReady] = useState(false);
 
-  useEffect(() => {
-    const scriptId = 'naver-map-script';
+  // 🔸 스크립트 로드 후 mapOptions를 안전하게 사용
+  const loadNaverScript = () => {
+    return new Promise((resolve, reject) => {
+      if (window.naver && window.naver.maps) {
+        resolve();
+        return;
+      }
 
-    if (!document.getElementById(scriptId)) {
       const script = document.createElement('script');
-      script.id = scriptId;
       script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${NAVER_CLIENT_ID}&submodules=geocoder`;
       script.async = true;
       script.defer = true;
-      script.onload = initializeMap;
+      script.onload = () => {
+        if (window.naver && window.naver.maps) {
+          resolve();
+        } else {
+          reject(new Error('네이버 지도 API 로딩 실패'));
+        }
+      };
+      script.onerror = reject;
+
       document.head.appendChild(script);
-    } else {
-      initializeMap();
-    }
+    });
+  };
 
-    function initializeMap() {
-      if (!window.naver || !mapRef.current) return;
-
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          const userLocation = new window.naver.maps.LatLng(latitude, longitude);
-
-          const mapOptions = {
-            center: userLocation,
+  // ✅ 최초 지도 로딩
+  useEffect(() => {
+    loadNaverScript().then(() => {
+      const mapOptions = {
+            center: new window.naver.maps.LatLng(37.5665, 126.978),
             zoom: 14,
             zoomControl: true,
             mapTypeControl: true,
@@ -46,53 +52,76 @@ function NaverMap({ searchQuery }) {
             },
           };
 
-          mapInstance.current = new window.naver.maps.Map(mapRef.current, mapOptions);
 
-          new window.naver.maps.Marker({
-            position: userLocation,
-            map: mapInstance.current,
-            title: '현재 위치',
+      if (mapRef.current) {
+        mapInstance.current = new window.naver.maps.Map(mapRef.current, mapOptions);
+
+        // 📍 현재 위치
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition((pos) => {
+            const currPos = new window.naver.maps.LatLng(
+              pos.coords.latitude,
+              pos.coords.longitude
+            );
+            mapInstance.current.setCenter(currPos);
+            mapInstance.current.setZoom(13);
+            new window.naver.maps.Marker({
+              position: currPos,
+              map: mapInstance.current,
+            });
           });
-        },
-        (error) => {
-          console.error('위치 정보 가져오기 실패:', error);
         }
-      );
-    }
+
+        setIsMapReady(true);
+      }
+    }).catch((err) => {
+      console.error('지도 로드 실패:', err);
+    });
   }, []);
 
+  // ✅ 주소 검색 시 지도 이동 + 콘솔 출력
   useEffect(() => {
-    if (!searchQuery || 
-        !window.naver?.maps?.services || 
-        typeof window.naver.maps.services.Geocoder !== 'function' ||
-        !mapInstance.current
-      ) {
-        return;
-      }
+    if (!searchQuery || !isMapReady || !window.naver?.maps?.Service) return;
 
-    const geocoder = new window.naver.maps.services.Geocoder();
-    geocoder.addressSearch(searchQuery, (result, status) => {
-      if (status === window.naver.maps.services.Status.OK) {
-        const { y, x } = result[0];
-        const newLatLng = new window.naver.maps.LatLng(y, x);
-        mapInstance.current.setCenter(newLatLng);
-
-          new window.naver.maps.Marker({
-            position: newLatLng,
-            map: mapInstance.current,
-            title: searchQuery,
-          });
-        } else {
-          console.error('주소 검색 실패 또는 결과 없음:', status, result);
+    window.naver.maps.Service.geocode(
+      { query: searchQuery },
+      (status, response) => {
+        if (status !== window.naver.maps.Service.Status.OK) {
+          alert('주소 검색 실패');
+          return;
         }
-      });
-    };
 
-    tryGeocode();
-  }, [searchQuery]);
+        const result = response.v2.addresses[0];
+        if (!result) {
+          alert('검색 결과 없음');
+          return;
+        }
+
+        const lat = parseFloat(result.y);
+        const lng = parseFloat(result.x);
+        const location = new window.naver.maps.LatLng(lat, lng);
+
+        mapInstance.current.setCenter(location);
+        mapInstance.current.setZoom(14);
+
+        // 🔁 마커 초기화 및 다시 그리기
+        if (markerRef.current) {
+          markerRef.current.setMap(null);
+        }
+        markerRef.current = new window.naver.maps.Marker({
+          position: location,
+          map: mapInstance.current,
+        });
+
+        // ✅ 콘솔 출력
+        console.log('🔎 도로명:', result.roadAddress);
+        console.log('지번:', result.jibunAddress);
+        console.log('위도:', lat, '경도:', lng);
+      }
+    );
+  }, [searchQuery, isMapReady]);
 
   return <div className="map-container" ref={mapRef} />;
 }
 
-// ✅ export 빠지면 App.js에서 인식 못 함
 export default NaverMap;

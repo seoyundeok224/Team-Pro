@@ -2,8 +2,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import './Sidebar.css';
 
 const Sidebar = ({
-  showEmoji, setShowEmoji,
-  darkMode, setDarkMode,
+  onSearch,
+  showEmoji,
+  setShowEmoji,
+  darkMode,
+  setDarkMode,
   searchQuery, setSearchQuery
 }) => {
   // 입력값 상태

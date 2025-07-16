@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 
 import Sidebar from './components/Sidebar/Sidebar';
@@ -12,7 +12,7 @@ function App() {
   const [showEmoji, setShowEmoji] = useState(true);
   const [mapStyle, setMapStyle] = useState('base');
   const [darkMode, setDarkMode] = useState(false);
-  const [user, setUser] = useState(null); // 로그인 상태 관리
+  const [user, setUser] = useState(null);
 
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -23,36 +23,37 @@ function App() {
     document.body.style.color = darkMode ? '#fff' : '#000';
   }, [darkMode]);
 
+
   return (
     <div className={`App ${darkMode ? 'dark' : ''}`}>
       <Popup />
       <Navbar darkMode={darkMode} />
       <div className="main-layout">
-        <Sidebar onSearch={(query) => setSearchQuery(query)}
+        <Sidebar
           showEmoji={showEmoji}
           setShowEmoji={setShowEmoji}
-          mapStyle={mapStyle}
+          // mapStyle={mapStyle}
           setMapStyle={setMapStyle}
           darkMode={darkMode}
           setDarkMode={setDarkMode}
-          user={user}
-          setUser={setUser}
+          // user={user}
+          // setUser={setUser}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
         />
 
         <div className="map-container">
           <NaverMap searchQuery={searchQuery} />
-          <WeatherBar 
-            darkMode={darkMode} 
+          <WeatherBar
+            darkMode={darkMode}
             searchQuery={searchQuery}
           />
         </div>
       </div>
       <Footer darkMode={darkMode} />
     </div>
-    
+
   );
-  }
+}
 
 export default App;
