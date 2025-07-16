@@ -8,7 +8,7 @@ function NaverMap({ searchQuery }) {
   const markerRef = useRef(null);
   const [isMapReady, setIsMapReady] = useState(false);
 
-  // 🔸 스크립트 로드 후 mapOptions를 안전하게 사용
+  // 스크립트 로드 후 mapOptions를 안전하게 사용
   const loadNaverScript = () => {
     return new Promise((resolve, reject) => {
       if (window.naver && window.naver.maps) {
@@ -33,7 +33,7 @@ function NaverMap({ searchQuery }) {
     });
   };
 
-  // ✅ 최초 지도 로딩
+  // 최초 지도 로딩
   useEffect(() => {
     loadNaverScript().then(() => {
       const mapOptions = {
@@ -56,7 +56,7 @@ function NaverMap({ searchQuery }) {
       if (mapRef.current) {
         mapInstance.current = new window.naver.maps.Map(mapRef.current, mapOptions);
 
-        // 📍 현재 위치
+        // 현재 위치
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition((pos) => {
             const currPos = new window.naver.maps.LatLng(
@@ -79,7 +79,7 @@ function NaverMap({ searchQuery }) {
     });
   }, []);
 
-  // ✅ 주소 검색 시 지도 이동 + 콘솔 출력
+  // 주소 검색 시 지도 이동 + 콘솔 출력
   useEffect(() => {
     if (!searchQuery || !isMapReady || !window.naver?.maps?.Service) return;
 
@@ -104,7 +104,7 @@ function NaverMap({ searchQuery }) {
         mapInstance.current.setCenter(location);
         mapInstance.current.setZoom(14);
 
-        // 🔁 마커 초기화 및 다시 그리기
+        // 마커 초기화 및 다시 그리기
         if (markerRef.current) {
           markerRef.current.setMap(null);
         }
@@ -113,7 +113,7 @@ function NaverMap({ searchQuery }) {
           map: mapInstance.current,
         });
 
-        // ✅ 콘솔 출력
+        // 콘솔 출력
         console.log('🔎 도로명:', result.roadAddress);
         console.log('지번:', result.jibunAddress);
         console.log('위도:', lat, '경도:', lng);
