@@ -39,7 +39,6 @@ function WeatherBar({ darkMode, searchQuery }) {
     }
 
     if (!data || data.length === 0) {
-      alert('해당 지역을 찾을 수 없습니다.');
       return null;
     }
 
