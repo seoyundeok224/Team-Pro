@@ -9,13 +9,6 @@ const Footer = ({ darkMode }) => {
     <footer className={darkMode ? 'footer-dark' : 'footer-light'}>
       <div className="footer-content">
         
-        {/* 주소 텍스트 (가운데 정렬, 작은 글씨) */}
-        <div className="footer-address">
-          (우) 00000 서울특별시 강남구 OO대로 000길 00-00<br />
-          Tel: 01-1234-5678 | Fax: 00-000-0000 <br/>
-          Email: www.building-outline-map.com
-        </div>
-
         {/* SNS 아이콘 그룹 - 오른쪽 정렬 */}
         <div id="social-icons-right" className="icon-container">
           <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">
@@ -27,6 +20,13 @@ const Footer = ({ darkMode }) => {
           <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">
             <img src={facebookIcon} alt="Facebook" className="sns-icon" />
           </a>
+        </div>
+
+        {/* 주소 텍스트 (가운데 정렬) */}
+        <div className="footer-address">
+          (우) 00000 서울특별시 강남구 OO대로 000길 00-00<br />
+          Tel: 01-1234-5678 | Fax: 00-000-0000 <br />
+          Email: www.building-outline-map.com
         </div>
 
         {/* 구분선 */}
