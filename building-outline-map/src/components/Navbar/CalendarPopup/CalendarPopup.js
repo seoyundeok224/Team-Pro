@@ -1,64 +1,101 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './CalendarPopup.css';
+
+const LOCAL_STORAGE_KEY = 'calendarMemos'; // 로컬스토리지 key 정의
 
 // 📅 달력 + 메모 팝업 컴포넌트
 const CalendarPopup = ({ onClose }) => {
-  // 선택된 날짜 상태
-  const [selectedDate, setSelectedDate] = useState('');
-  
-  // 현재 메모 입력값
+  // 🗓️ 시작일과 종료일 상태
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
+  // 📝 메모 입력값 상태
   const [memo, setMemo] = useState('');
-  
-  // 저장된 메모 (날짜별로 저장됨)
-  const [savedMemos, setSavedMemos] = useState({});
 
-  // 📆 날짜 변경 핸들러 (날짜 선택 시 메모를 불러옴)
-  const handleDateChange = (e) => {
-    const date = e.target.value;
-    setSelectedDate(date);
-    setMemo(savedMemos[date] || ''); // 이미 저장된 메모가 있다면 불러옴
+  // 💾 저장된 메모 리스트 [{ startDate, endDate, content }]
+  const [savedMemos, setSavedMemos] = useState([]);
+
+  // ✅ 요일에 따라 날짜 색상 지정 함수
+  const getDayColor = (dateStr) => {
+    if (!dateStr) return 'inherit';
+    const day = new Date(dateStr).getDay(); // 0 = 일, 6 = 토
+    if (day === 0) return 'red';   // 일요일 → 빨강
+    if (day === 6) return 'blue';  // 토요일 → 파랑
+    return 'black';                // 평일 → 검정
   };
 
-  // 💾 메모 저장 핸들러
+  // 📂 컴포넌트가 처음 렌더링 될 때 로컬스토리지에서 메모 불러오기
+  useEffect(() => {
+    const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (stored) {
+      try {
+        setSavedMemos(JSON.parse(stored)); // 저장된 값이 있다면 적용
+      } catch (err) {
+        console.error('메모 불러오기 오류:', err);
+      }
+    }
+  }, []);
+
+  // 💾 메모 저장 버튼 클릭 시
   const handleSaveMemo = () => {
-    if (!selectedDate) return; // 날짜가 선택되지 않으면 저장하지 않음
+    // 유효성 검사: 날짜, 메모 모두 입력되었는지 확인
+    if (!startDate || !endDate || !memo.trim()) return;
 
-    // 날짜별 메모 저장
-    setSavedMemos((prev) => ({
-      ...prev,
-      [selectedDate]: memo,
-    }));
+    const newMemo = { startDate, endDate, content: memo };
+    const updated = [...savedMemos, newMemo];
 
-    // 저장 후 상태 초기화 (메모 입력창 비우기, 날짜 비우기)
+    setSavedMemos(updated); // 화면 상태 업데이트
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated)); // 로컬스토리지에도 저장
+
+    // 입력값 초기화
+    setStartDate('');
+    setEndDate('');
     setMemo('');
-    setSelectedDate('');
-  };
-
-  // 📅 저장된 메모를 날짜별로 목록으로 보여줌
-  const handleSelectSavedDate = (date) => {
-    setSelectedDate(date);
-    setMemo(savedMemos[date]);
   };
 
   // 🗑️ 메모 삭제 핸들러
-  const handleDeleteMemo = (date) => {
-    const newSavedMemos = { ...savedMemos };
-    delete newSavedMemos[date];  // 해당 날짜 메모 삭제
-    setSavedMemos(newSavedMemos); // 삭제된 메모를 상태에 반영
+  const handleDeleteMemo = (index) => {
+    const updated = [...savedMemos];
+    updated.splice(index, 1); // index 번째 항목 삭제
+
+    setSavedMemos(updated); // 상태 업데이트
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated)); // 로컬스토리지 동기화
+  };
+
+  // ✏ 저장된 메모를 클릭하면 해당 내용을 편집할 수 있도록 설정
+  const handleSelectMemo = (memoObj) => {
+    setStartDate(memoObj.startDate);
+    setEndDate(memoObj.endDate);
+    setMemo(memoObj.content);
   };
 
   return (
     <div className="calendar-box">
-      {/* 📆 날짜 선택 필드 */}
-      <input
-        type="date"
-        className="date-picker"
-        onChange={handleDateChange}
-        value={selectedDate}
-      />
+      {/* 📆 날짜 선택 필드 (시작일 & 종료일) */}
+      <div className="date-range-picker">
+        <label>
+          시작일:
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            style={{ color: getDayColor(startDate) }} // 요일에 따라 색 적용
+          />
+        </label>
 
-      {/* 📝 메모 입력창 (날짜를 선택했을 때만 표시) */}
-      {selectedDate && (
+        <label>
+          종료일:
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            style={{ color: getDayColor(endDate) }} // 요일에 따라 색 적용
+          />
+        </label>
+      </div>
+
+      {/* 📝 메모 입력 필드 (날짜가 모두 선택되었을 때만 보임) */}
+      {startDate && endDate && (
         <div className="memo-box">
           <textarea
             value={memo}
@@ -72,20 +109,33 @@ const CalendarPopup = ({ onClose }) => {
         </div>
       )}
 
-      {/* 📅 저장된 메모 목록 */}
-      {Object.keys(savedMemos).length > 0 && (
+      {/* 📋 저장된 메모 목록 영역 */}
+      {savedMemos.length > 0 && (
         <div className="saved-memos-list">
           <h4>저장된 목록</h4>
           <ul>
-            {Object.keys(savedMemos).map((date) => (
-              <li key={date} onClick={() => handleSelectSavedDate(date)}>
-                <div className="memo-date">{date}</div>
-                <div className="memo-preview">{savedMemos[date]}</div>
-                <button 
-                  className="delete-btn" 
+            {savedMemos.map((memoObj, index) => (
+              <li key={index} onClick={() => handleSelectMemo(memoObj)}>
+                {/* 📅 날짜 범위 표시 (요일 색상 적용) */}
+                <div className="memo-date">
+                  <span style={{ color: getDayColor(memoObj.startDate) }}>
+                    {memoObj.startDate}
+                  </span>
+                  {' ~ '}
+                  <span style={{ color: getDayColor(memoObj.endDate) }}>
+                    {memoObj.endDate}
+                  </span>
+                </div>
+
+                {/* ✨ 메모 내용 미리보기 */}
+                <div className="memo-preview">{memoObj.content}</div>
+
+                {/* 🗑 삭제 버튼 */}
+                <button
+                  className="delete-btn"
                   onClick={(e) => {
-                    e.stopPropagation();  // 클릭 이벤트 전파를 막아 팝업의 날짜 선택 동작을 방지
-                    handleDeleteMemo(date); // 메모 삭제
+                    e.stopPropagation(); // 상위 클릭 이벤트 방지
+                    handleDeleteMemo(index);
                   }}
                 >
                   삭제
