@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-const NAVER_CLIENT_ID = process.env.REACT_APP_NAVER_ID;
+const NAVER_CLIENT_ID = process.env.REACT_APP_NAVER_MAP_ID;
 
 function NaverMap({ searchResults = [], selectedPlace = null }) {
   const mapRef = useRef(null);
