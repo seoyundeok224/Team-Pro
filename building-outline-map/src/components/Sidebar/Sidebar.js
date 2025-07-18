@@ -8,13 +8,13 @@ const Sidebar = ({
   onSearch,
   showEmoji, setShowEmoji,
   darkMode, setDarkMode,
-  searchQuery,setSearchQuery
+  searchQuery, setSearchQuery
 }) => {
 
   // 입력값 상태
   const [inputValue, setInputValue] = useState('');
 
-   // 최근 검색어 리스트 상태 (localStorage 초기화)
+  // 최근 검색어 리스트 상태 (localStorage 초기화)
   const [searchHistory, setSearchHistory] = useState(() => {
     const saved = localStorage.getItem('searchHistory');
     return saved ? JSON.parse(saved) : [];
@@ -87,6 +87,13 @@ const Sidebar = ({
     // * 신규) 네이버 검색 API로 검색결과 받아오기
     try {
       const localResults = await naverLocalSearch(trimmedInput);
+      // 오류 확인용 콘솔
+      if (!localResults) {
+        alert('검색 결과를 불러올 수 없습니다.');
+        setSearchResults([]);
+        setLoading(false);
+        return;
+      }
 
       // 검색결과를 지오코딩해서 위/경도 좌표 추출
       const placesWithCoords = await Promise.all(
@@ -250,7 +257,7 @@ const Sidebar = ({
           {/* 신규) 추가 disabled={loading}, {loading ? '검색 중...' : '🔍 검색'} */}
           <button className="search-button" onClick={handleSearch} disabled={loading}>
             {loading ? '검색 중...' : '🔍 검색'}
-            </button>
+          </button>
 
           {/* 오류 메시지 */}
           {errorMessage && <div className="error-message">{errorMessage}</div>}
@@ -330,22 +337,22 @@ const Sidebar = ({
           <div className="search-results">
             {searchResults && searchResults.length > 0 && searchResults.map((place, idx) => (
               <div
-              key={idx}
-              className="search-result-item"
-              onClick={() => setSelectedPlace(place)}
-              style={{ cursor: 'pointer' }}
+                key={idx}
+                className="search-result-item"
+                onClick={() => setSelectedPlace(place)}
+                style={{ cursor: 'pointer' }}
               >
                 <strong>{place.title}</strong>
                 <span className="region">{extractRegion(place.roadAddress || place.address)}</span>
                 <button
-                onClick={e => {
-                  e.stopPropagation();
-                  navigator.clipboard.writeText(place.roadAddress || place.address);
-                }}
-                className="copy-btn"
+                  onClick={e => {
+                    e.stopPropagation();
+                    navigator.clipboard.writeText(place.roadAddress || place.address);
+                  }}
+                  className="copy-btn"
                 >복사</button>
                 <div className="detail-addr">{place.roadAddress || place.address}</div>
-                </div>
+              </div>
             ))}
           </div>
         </>
