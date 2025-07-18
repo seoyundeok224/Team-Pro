@@ -2,11 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 
 const NAVER_CLIENT_ID = process.env.REACT_APP_NAVER_ID;
 
-function NaverMap({ searchQuery }) {
+function NaverMap({ searchResults = [], selectedPlace = null }) {
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
-  const markerRef = useRef(null);
+  // const markerRef = useRef(null); 이제 단일마커 필요 없음
   const initMarkerRef = useRef(null);
+  // 검색결과 5개의 장소를 표시 할 복수마커
+  const resultMarkersRef = useRef([]);
+
   const [isMapReady, setIsMapReady] = useState(false);
   const [hasSearchedOnce, setHasSearchedOnce] = useState(false);
 
@@ -30,7 +33,6 @@ function NaverMap({ searchQuery }) {
         }
       };
       script.onerror = reject;
-
       document.head.appendChild(script);
     });
   };
@@ -78,6 +80,7 @@ function NaverMap({ searchQuery }) {
       });
   }, [hasSearchedOnce]);
 
+//--------------------------카카오 API-------------------------
   // 주소 검색 → 지도 이동
   useEffect(() => {
     if (!searchQuery || !isMapReady) return;
@@ -125,6 +128,60 @@ function NaverMap({ searchQuery }) {
         alert("주소 검색 중 오류 발생");
       });
   }, [searchQuery, isMapReady]);
+//--------------------------성은 상호검색 관련코드-------------------------
+    // 검색이 한 번이라도 실행되면 초기 마커 제거
+  useEffect(() => {
+    if (hasSearchedOnce && initMarkerRef.current) {
+      initMarkerRef.current.setMap(null);
+      initMarkerRef.current = null;
+      console.log('2. 초기 위치 마커 제거');
+    }
+  }, [hasSearchedOnce]);
+
+  // 검색 결과 마커 복수로 표시
+  useEffect(() => {
+    if (!isMapReady || !window.naver || !mapInstance.current) return;
+
+    // 기존 검색 마커 제거
+    resultMarkersRef.current.forEach(marker => marker.setMap(null));
+    resultMarkersRef.current = [];
+
+    // 검색결과(복수) 마커 표시
+    if (searchResults && searchResults.length > 0) {
+      searchResults.forEach(place => {
+        if (place.lat !== undefined && place.lng !== undefined) {
+          const marker = new window.naver.maps.Marker({
+            position: new window.naver.maps.LatLng(place.lat, place.lng),
+            map: mapInstance.current,
+          });
+          resultMarkersRef.current.push(marker);
+        }
+      });
+      // 첫 번째 결과로 지도 중심 이동
+      const first = searchResults[0];
+      if (first && first.lat && first.lng) {
+        mapInstance.current.setCenter(new window.naver.maps.LatLng(first.lat, first.lng));
+        mapInstance.current.setZoom(14);
+      }
+    }
+  }, [searchResults, isMapReady]);
+
+   // 선택된 장소로 지도 확대/이동
+  useEffect(() => {
+    if (!isMapReady || !selectedPlace || !selectedPlace.lat || !selectedPlace.lng) return;
+    mapInstance.current.setCenter(
+      new window.naver.maps.LatLng(selectedPlace.lat, selectedPlace.lng)
+    );
+    mapInstance.current.setZoom(16);
+  }, [selectedPlace, isMapReady]);
+
+  // 검색이 한 번이라도 실행된 경우 기록
+  useEffect(() => {
+    if (searchResults && searchResults.length > 0 && !hasSearchedOnce) {
+      setHasSearchedOnce(true);
+    }
+  }, [searchResults, hasSearchedOnce]);
+//---------------------------------------------------
 
   return <div ref={mapRef} style={{ width: '100%', height: '100%' }} />;
 }

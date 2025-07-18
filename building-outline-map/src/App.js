@@ -10,12 +10,14 @@ import WeatherBar from './components/Weather/WeatherBar';
 
 function App() {
   const [showEmoji, setShowEmoji] = useState(true);
-  const [mapStyle, setMapStyle] = useState('base');
   const [darkMode, setDarkMode] = useState(false);
   const [user, setUser] = useState(null);
 
 
   const [searchQuery, setSearchQuery] = useState('');
+
+  const [searchResults, setSearchResults] = useState([]);
+  const [selectedPlace, setSelectedPlace] = useState(null);
 
 
   useEffect(() => {
@@ -32,18 +34,19 @@ function App() {
         <Sidebar
           showEmoji={showEmoji}
           setShowEmoji={setShowEmoji}
-          // mapStyle={mapStyle}
-          setMapStyle={setMapStyle}
           darkMode={darkMode}
           setDarkMode={setDarkMode}
-          // user={user}
-          // setUser={setUser}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
+          searchResults={searchResults}
+          setSearchResults={setSearchResults}
+          setSelectedPlace={setSelectedPlace}
         />
 
         <div className="map-container">
-          <NaverMap searchQuery={searchQuery} />
+          <NaverMap 
+          searchQuery={searchQuery}
+          searchResults={searchResults} selectedPlace={selectedPlace} />
           <WeatherBar
             darkMode={darkMode}
             searchQuery={searchQuery}
