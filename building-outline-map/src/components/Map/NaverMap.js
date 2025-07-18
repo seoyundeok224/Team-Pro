@@ -2,11 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 
 const NAVER_CLIENT_ID = process.env.REACT_APP_NAVER_ID;
 
-function NaverMap({ searchQuery }) {
+function NaverMap({ searchResults = [], selectedPlace = null }) {
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
-  const markerRef = useRef(null);
+  // const markerRef = useRef(null); 이제 단일마커 필요 없음
   const initMarkerRef = useRef(null);
+  // 검색결과 5개의 장소를 표시 할 복수마커
+  const resultMarkersRef = useRef([]);
+
   const [isMapReady, setIsMapReady] = useState(false);
   const [hasSearchedOnce, setHasSearchedOnce] = useState(false); // ✅ 검색 여부 플래그
 
@@ -29,7 +32,6 @@ function NaverMap({ searchQuery }) {
         }
       };
       script.onerror = reject;
-
       document.head.appendChild(script);
     });
   };
@@ -80,66 +82,58 @@ function NaverMap({ searchQuery }) {
     });
   }, [hasSearchedOnce]);
 
-  // 주소 검색 시 지도 이동
+    // 검색이 한 번이라도 실행되면 초기 마커 제거
   useEffect(() => {
-    if (!searchQuery || !isMapReady || !window.naver?.maps?.Service) return;
+    if (hasSearchedOnce && initMarkerRef.current) {
+      initMarkerRef.current.setMap(null);
+      initMarkerRef.current = null;
+      console.log('2. 초기 위치 마커 제거');
+    }
+  }, [hasSearchedOnce]);
 
-    // 검색 시도 기록
-    setHasSearchedOnce(true);
+  // 검색 결과 마커 복수로 표시
+  useEffect(() => {
+    if (!isMapReady || !window.naver || !mapInstance.current) return;
 
-    window.naver.maps.Service.geocode(
-      { query: searchQuery },
-      (status, response) => {
-        if (status !== window.naver.maps.Service.Status.OK) {
-          alert('주소 검색 실패');
-          return;
+    // 기존 검색 마커 제거
+    resultMarkersRef.current.forEach(marker => marker.setMap(null));
+    resultMarkersRef.current = [];
+
+    // 검색결과(복수) 마커 표시
+    if (searchResults && searchResults.length > 0) {
+      searchResults.forEach(place => {
+        if (place.lat !== undefined && place.lng !== undefined) {
+          const marker = new window.naver.maps.Marker({
+            position: new window.naver.maps.LatLng(place.lat, place.lng),
+            map: mapInstance.current,
+          });
+          resultMarkersRef.current.push(marker);
         }
-
-        // 주소를 반환하여 지도에 표시 할 마커가 있는 경우 alert X.
-        if (!response?.v2?.addresses || 
-          response.v2.addresses.length === 0 || 
-          !response.v2.addresses[0]) {
-          alert('검색 결과 없음');
-          return;
-        }
-
-        const result = response.v2.addresses[0];
-        
-        // 원본 코드: 검색 결과가 있음에도 alert가 발생
-        // const result = response.v2.addresses[0];
-        // if (!result) {
-        //   alert('검색 결과 없음');
-        //   return;
-        // }
-        
-        const lat = parseFloat(result.y);
-        const lng = parseFloat(result.x);
-        const location = new window.naver.maps.LatLng(lat, lng);
-
-        mapInstance.current.setCenter(location);
+      });
+      // 첫 번째 결과로 지도 중심 이동
+      const first = searchResults[0];
+      if (first && first.lat && first.lng) {
+        mapInstance.current.setCenter(new window.naver.maps.LatLng(first.lat, first.lng));
         mapInstance.current.setZoom(14);
-
-        // 초기 마커 제거 (첫 검색 시점)
-        if (initMarkerRef.current) {
-          initMarkerRef.current.setMap(null);
-          initMarkerRef.current = null;
-          console.log('2. 초기 위치 마커 제거');
-        }
-
-        // 기존 검색 마커 제거
-        if (markerRef.current) {
-          markerRef.current.setMap(null);
-        }
-
-        markerRef.current = new window.naver.maps.Marker({
-          position: location,
-          map: mapInstance.current,
-        });
-
-        console.log('3. 검색 마커 생성:', result.roadAddress || result.jibunAddress);
       }
+    }
+  }, [searchResults, isMapReady]);
+
+   // 선택된 장소로 지도 확대/이동
+  useEffect(() => {
+    if (!isMapReady || !selectedPlace || !selectedPlace.lat || !selectedPlace.lng) return;
+    mapInstance.current.setCenter(
+      new window.naver.maps.LatLng(selectedPlace.lat, selectedPlace.lng)
     );
-  }, [searchQuery, isMapReady]);
+    mapInstance.current.setZoom(16);
+  }, [selectedPlace, isMapReady]);
+
+  // 검색이 한 번이라도 실행된 경우 기록
+  useEffect(() => {
+    if (searchResults && searchResults.length > 0 && !hasSearchedOnce) {
+      setHasSearchedOnce(true);
+    }
+  }, [searchResults, hasSearchedOnce]);
 
   return <div className="map-container" ref={mapRef} />;
 }
