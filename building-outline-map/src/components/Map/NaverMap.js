@@ -1,54 +1,132 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 const NAVER_CLIENT_ID = process.env.REACT_APP_NAVER_ID;
 
-function NaverMap() {
+function NaverMap({ searchQuery }) {
   const mapRef = useRef(null);
+  const mapInstance = useRef(null);
+  const markerRef = useRef(null);
+  const initMarkerRef = useRef(null);
+  const [isMapReady, setIsMapReady] = useState(false);
+  const [hasSearchedOnce, setHasSearchedOnce] = useState(false);
 
-  useEffect(() => {
-    const scriptId = 'naver-map-script';
+  // 네이버 지도 스크립트 로드
+  const loadNaverScript = () => {
+    return new Promise((resolve, reject) => {
+      if (window.naver && window.naver.maps) {
+        resolve();
+        return;
+      }
 
-    if (document.getElementById(scriptId)) {
-      initializeMap();
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.id = scriptId;
-    script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${NAVER_CLIENT_ID}`;
-    script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${NAVER_CLIENT_ID}&submodules=geocoder`;
-    script.src =`http://code.jquery.com/jquery-latest.min.js`;
-    script.src =`https://code.jquery.com/jquery-3.6.0.min.js`;
-    script.async = true;
-    script.defer = true;
-    script.onload = initializeMap;
-
-    document.head.appendChild(script);
-
-    function initializeMap() {
-      if (!window.naver || !mapRef.current) return;
-
-      const mapOptions = {
-        center: new window.naver.maps.LatLng(37.5665, 126.9780), // 서울시청
-        zoom: 14,
-        zoomControl: true,
-        mapTypeControl: true,
-        mapTypeId: window.naver.maps.MapTypeId.NORMAL,
-        scaleControl: true,
-        logoControl: true,
-        padding: { top: 10, right: 10, bottom: 10, left: 10 },
-        mapDataControl: false,
-        zoomControlOptions: {
-          position: window.naver.maps.Position.BOTTOM_LEFT,
-          style: 2,
-        },
+      const script = document.createElement('script');
+      script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${NAVER_CLIENT_ID}&submodules=geocoder`;
+      script.async = true;
+      script.defer = true;
+      script.onload = () => {
+        if (window.naver && window.naver.maps) {
+          resolve();
+        } else {
+          reject(new Error('네이버 지도 API 로딩 실패'));
+        }
       };
+      script.onerror = reject;
 
-      new window.naver.maps.Map(mapRef.current, mapOptions);
-    }
-  }, []);
+      document.head.appendChild(script);
+    });
+  };
 
-  return <div className="map-container" ref={mapRef} />;
+  // 지도 초기화
+  useEffect(() => {
+    loadNaverScript()
+      .then(() => {
+        const mapOptions = {
+          center: new window.naver.maps.LatLng(37.5665, 126.978),
+          zoom: 14,
+          zoomControl: true,
+          mapTypeControl: true,
+          mapTypeId: window.naver.maps.MapTypeId.NORMAL,
+          scaleControl: true,
+          logoControl: true,
+          padding: { top: 10, right: 10, bottom: 10, left: 10 },
+          mapDataControl: false,
+          zoomControlOptions: {
+            position: window.naver.maps.Position.BOTTOM_LEFT,
+            style: 2,
+          },
+        };
+
+        if (mapRef.current) {
+          mapInstance.current = new window.naver.maps.Map(mapRef.current, mapOptions);
+
+          if (navigator.geolocation && !hasSearchedOnce) {
+            navigator.geolocation.getCurrentPosition((pos) => {
+              const currPos = new window.naver.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+              mapInstance.current.setCenter(currPos);
+              mapInstance.current.setZoom(13);
+              initMarkerRef.current = new window.naver.maps.Marker({
+                position: currPos,
+                map: mapInstance.current,
+              });
+            });
+          }
+
+          setIsMapReady(true);
+        }
+      })
+      .catch((err) => {
+        console.error('지도 로드 실패:', err);
+      });
+  }, [hasSearchedOnce]);
+
+  // 주소 검색 → 지도 이동
+  useEffect(() => {
+    if (!searchQuery || !isMapReady) return;
+
+    setHasSearchedOnce(true);
+
+    // 주소 포맷 정제
+    let refinedAddress = searchQuery
+      .trim()
+      .replace("서울시", "서울")
+      .replace("경기도", "경기")
+      .replace("부산시", "부산")
+      .replace(/\s+/g, " ");
+
+    console.log("정제된 주소:", refinedAddress);
+
+    // 프록시 서버를 통해 Kakao API 호출
+    fetch(`http://localhost:4000/kakao/address?query=${encodeURIComponent(refinedAddress)}`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("📦 Kakao 응답:", data);  // ✅ 이 줄 추가됨
+
+        if (!data.documents || data.documents.length === 0) {
+          alert("주소 검색 실패: 해당 주소를 찾을 수 없습니다.");
+          return;
+        }
+
+        const { x, y } = data.documents[0]; // x: 경도, y: 위도
+        const location = new window.naver.maps.LatLng(y, x);
+
+        mapInstance.current.setCenter(location);
+        mapInstance.current.setZoom(16);
+
+        if (markerRef.current) {
+          markerRef.current.setMap(null);
+        }
+
+        markerRef.current = new window.naver.maps.Marker({
+          position: location,
+          map: mapInstance.current,
+        });
+      })
+      .catch((err) => {
+        console.error("Kakao 주소 검색 오류:", err);
+        alert("주소 검색 중 오류 발생");
+      });
+  }, [searchQuery, isMapReady]);
+
+  return <div ref={mapRef} style={{ width: '100%', height: '100%' }} />;
 }
 
 export default NaverMap;
