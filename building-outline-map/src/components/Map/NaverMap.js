@@ -2,13 +2,12 @@ import React, { useEffect, useRef, useState } from 'react';
 
 const NAVER_CLIENT_ID = process.env.REACT_APP_NAVER_ID;
 
-function NaverMap({ searchResults = [], selectedPlace = null }) {
+function NaverMap({ searchResults = [], selectedPlace = null, searchQuery = '' }) {
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
-  // const markerRef = useRef(null); 이제 단일마커 필요 없음
-  const initMarkerRef = useRef(null);
-  // 검색결과 5개의 장소를 표시 할 복수마커
-  const resultMarkersRef = useRef([]);
+  const markerRef = useRef(null);  // ✅ Kakao 주소 검색용 단일 마커
+  const initMarkerRef = useRef(null);  // ✅ 초기 위치 마커
+  const resultMarkersRef = useRef([]); // ✅ 복수 마커
 
   const [isMapReady, setIsMapReady] = useState(false);
   const [hasSearchedOnce, setHasSearchedOnce] = useState(false);
@@ -80,14 +79,12 @@ function NaverMap({ searchResults = [], selectedPlace = null }) {
       });
   }, [hasSearchedOnce]);
 
-//--------------------------카카오 API-------------------------
-  // 주소 검색 → 지도 이동
+  //--------------------------카카오 주소 검색 기능-------------------------
   useEffect(() => {
     if (!searchQuery || !isMapReady) return;
 
     setHasSearchedOnce(true);
 
-    // 주소 포맷 정제
     let refinedAddress = searchQuery
       .trim()
       .replace("서울시", "서울")
@@ -97,11 +94,10 @@ function NaverMap({ searchResults = [], selectedPlace = null }) {
 
     console.log("정제된 주소:", refinedAddress);
 
-    // 프록시 서버를 통해 Kakao API 호출
     fetch(`http://localhost:4000/kakao/address?query=${encodeURIComponent(refinedAddress)}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log("📦 Kakao 응답:", data);  // ✅ 이 줄 추가됨
+        console.log("📦 Kakao 응답:", data);
 
         if (!data.documents || data.documents.length === 0) {
           alert("주소 검색 실패: 해당 주소를 찾을 수 없습니다.");
@@ -128,8 +124,8 @@ function NaverMap({ searchResults = [], selectedPlace = null }) {
         alert("주소 검색 중 오류 발생");
       });
   }, [searchQuery, isMapReady]);
-//--------------------------성은 상호검색 관련코드-------------------------
-    // 검색이 한 번이라도 실행되면 초기 마커 제거
+
+  // 검색이 한 번이라도 실행되면 초기 마커 제거
   useEffect(() => {
     if (hasSearchedOnce && initMarkerRef.current) {
       initMarkerRef.current.setMap(null);
@@ -142,11 +138,9 @@ function NaverMap({ searchResults = [], selectedPlace = null }) {
   useEffect(() => {
     if (!isMapReady || !window.naver || !mapInstance.current) return;
 
-    // 기존 검색 마커 제거
     resultMarkersRef.current.forEach(marker => marker.setMap(null));
     resultMarkersRef.current = [];
 
-    // 검색결과(복수) 마커 표시
     if (searchResults && searchResults.length > 0) {
       searchResults.forEach(place => {
         if (place.lat !== undefined && place.lng !== undefined) {
@@ -157,7 +151,7 @@ function NaverMap({ searchResults = [], selectedPlace = null }) {
           resultMarkersRef.current.push(marker);
         }
       });
-      // 첫 번째 결과로 지도 중심 이동
+
       const first = searchResults[0];
       if (first && first.lat && first.lng) {
         mapInstance.current.setCenter(new window.naver.maps.LatLng(first.lat, first.lng));
@@ -166,7 +160,7 @@ function NaverMap({ searchResults = [], selectedPlace = null }) {
     }
   }, [searchResults, isMapReady]);
 
-   // 선택된 장소로 지도 확대/이동
+  // 선택된 장소로 지도 이동
   useEffect(() => {
     if (!isMapReady || !selectedPlace || !selectedPlace.lat || !selectedPlace.lng) return;
     mapInstance.current.setCenter(
@@ -175,13 +169,12 @@ function NaverMap({ searchResults = [], selectedPlace = null }) {
     mapInstance.current.setZoom(16);
   }, [selectedPlace, isMapReady]);
 
-  // 검색이 한 번이라도 실행된 경우 기록
+  // 검색되었는지 체크
   useEffect(() => {
     if (searchResults && searchResults.length > 0 && !hasSearchedOnce) {
       setHasSearchedOnce(true);
     }
   }, [searchResults, hasSearchedOnce]);
-//---------------------------------------------------
 
   return <div ref={mapRef} style={{ width: '100%', height: '100%' }} />;
 }
