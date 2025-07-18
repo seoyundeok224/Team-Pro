@@ -2,6 +2,7 @@
   "name": "building-map",
   "version": "0.1.0",
   "private": true,
+  "proxy": "https://dapi.kakao.com",
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
@@ -9,8 +10,12 @@
     "@testing-library/user-event": "^13.5.0",
     "@types/navermaps": "^3.9.1",
     "axios": "^1.10.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
     "http-proxy-middleware": "^3.0.5",
     "leaflet": "^1.9.4",
+    "node-fetch": "^3.3.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-draggable": "^4.5.0",
@@ -41,5 +46,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": "kakao-proxy-server.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
