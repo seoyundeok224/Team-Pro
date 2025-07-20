@@ -6,9 +6,6 @@ module.exports = function (app) {
     app.use('/v1/search', createProxyMiddleware({
         target: 'https://openapi.naver.com',
         changeOrigin: true,
-        pathRewrite: {
-            '^/v1/search': '/v1/search',
-        },
         onProxyReq(proxyReq, req, res) {
             console.log('[Proxy 요청]', req.url);
             console.log('Client ID:', process.env.REACT_APP_NAVER_SEARCH_CLIENT_ID); // 출력 확인

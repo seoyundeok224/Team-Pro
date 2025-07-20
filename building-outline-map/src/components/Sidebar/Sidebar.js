@@ -73,6 +73,8 @@ const Sidebar = ({
 
     setErrorMessage('');
     setSearchQuery(trimmedInput);
+    // 검색한 item sidebar로 가져옴
+    setLoading(true);
 
     // 중복 제거 + 최대 5개 저장
     setSearchHistory((prevHistory) => {
@@ -87,7 +89,10 @@ const Sidebar = ({
     // * 신규) 네이버 검색 API로 검색결과 받아오기
     try {
       const localResults = await naverLocalSearch(trimmedInput);
+
       // 오류 확인용 콘솔
+      console.log('[naverLocalSearch] 최종 URL:', url);
+      console.log('[naverLocalSearch] 전달되는 query:', query);
       if (!localResults) {
         alert('검색 결과를 불러올 수 없습니다.');
         setSearchResults([]);
