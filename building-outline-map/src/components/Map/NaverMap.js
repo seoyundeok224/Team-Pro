@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 const NAVER_CLIENT_ID = process.env.REACT_APP_NAVER_ID;
 
-function NaverMap({ searchQuery }) {
+function NaverMap({ searchQuery, selectedPlace }) {
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
   const markerRef = useRef(null);
@@ -10,14 +10,12 @@ function NaverMap({ searchQuery }) {
   const [isMapReady, setIsMapReady] = useState(false);
   const [hasSearchedOnce, setHasSearchedOnce] = useState(false);
 
-  // 네이버 지도 스크립트 로드
   const loadNaverScript = () => {
     return new Promise((resolve, reject) => {
       if (window.naver && window.naver.maps) {
         resolve();
         return;
       }
-
       const script = document.createElement('script');
       script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${NAVER_CLIENT_ID}&submodules=geocoder`;
       script.async = true;
@@ -30,12 +28,10 @@ function NaverMap({ searchQuery }) {
         }
       };
       script.onerror = reject;
-
       document.head.appendChild(script);
     });
   };
 
-  // 지도 초기화
   useEffect(() => {
     loadNaverScript()
       .then(() => {
@@ -78,53 +74,23 @@ function NaverMap({ searchQuery }) {
       });
   }, [hasSearchedOnce]);
 
-  // 주소 검색 → 지도 이동
   useEffect(() => {
-    if (!searchQuery || !isMapReady) return;
+    if (!selectedPlace || !isMapReady) return;
+    const { x, y } = selectedPlace;
+    const location = new window.naver.maps.LatLng(y, x);
 
-    setHasSearchedOnce(true);
+    mapInstance.current.setCenter(location);
+    mapInstance.current.setZoom(16);
 
-    // 주소 포맷 정제
-    let refinedAddress = searchQuery
-      .trim()
-      .replace("서울시", "서울")
-      .replace("경기도", "경기")
-      .replace("부산시", "부산")
-      .replace(/\s+/g, " ");
+    if (markerRef.current) {
+      markerRef.current.setMap(null);
+    }
 
-    console.log("정제된 주소:", refinedAddress);
-
-    // 프록시 서버를 통해 Kakao API 호출
-    fetch(`http://localhost:4000/kakao/address?query=${encodeURIComponent(refinedAddress)}`)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("📦 Kakao 응답:", data);  // ✅ 이 줄 추가됨
-
-        if (!data.documents || data.documents.length === 0) {
-          alert("주소 검색 실패: 해당 주소를 찾을 수 없습니다.");
-          return;
-        }
-
-        const { x, y } = data.documents[0]; // x: 경도, y: 위도
-        const location = new window.naver.maps.LatLng(y, x);
-
-        mapInstance.current.setCenter(location);
-        mapInstance.current.setZoom(16);
-
-        if (markerRef.current) {
-          markerRef.current.setMap(null);
-        }
-
-        markerRef.current = new window.naver.maps.Marker({
-          position: location,
-          map: mapInstance.current,
-        });
-      })
-      .catch((err) => {
-        console.error("Kakao 주소 검색 오류:", err);
-        alert("주소 검색 중 오류 발생");
-      });
-  }, [searchQuery, isMapReady]);
+    markerRef.current = new window.naver.maps.Marker({
+      position: location,
+      map: mapInstance.current,
+    });
+  }, [selectedPlace, isMapReady]);
 
   return <div ref={mapRef} style={{ width: '100%', height: '100%' }} />;
 }
