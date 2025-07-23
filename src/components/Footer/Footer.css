@@ -1,0 +1,90 @@
+/* 🧱 전체 푸터 콘텐츠 */
+.footer-content {
+  position: relative;
+  width: 100%;
+  padding: 2px;
+  box-sizing: border-box;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 🏠 주소 텍스트 - 가운데 아래 */
+.footer-address {
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.5;
+  color: inherit;
+  margin-top: 24px;
+}
+
+/* 🌐 SNS 아이콘 그룹 */
+.icon-container {
+  display: flex;
+  gap: 14px;
+}
+
+/* ▶️ 오른쪽 정렬 */
+#social-icons-right {
+  position: absolute;
+  top: 12px;
+  right: 20px;
+  z-index: 2;
+}
+
+/* 🖼️ 아이콘 스타일 */
+.sns-icon {
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.2));
+}
+
+.sns-icon:hover {
+  transform: scale(1.1);
+  opacity: 0.8;
+}
+
+/* ━ 구분선 */
+.footer-divider {
+  width: 90%;
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
+  margin: 8px auto;
+}
+
+/* Ⓒ 저작권 텍스트 */
+footer p {
+  font-size: 12px;
+  text-align: center;
+  color: inherit;
+  opacity: 0.8;
+  margin: 0;
+}
+
+/* ☀️ 라이트 테마 */
+.footer-light {
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+/* 🌙 다크 테마 */
+.footer-dark {
+  background-color: #141414;
+  color: #f0f0f0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* 🌙 다크 모드 구분선 + 아이콘 효과 */
+.footer-dark .footer-divider {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.footer-dark .sns-icon:hover {
+  opacity: 1;
+  transform: scale(1.15);
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+}

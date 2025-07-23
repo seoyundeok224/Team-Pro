@@ -1,0 +1,323 @@
+/* 📦 전체 사이드바 영역 */
+.sidebar {
+  width: 350px;
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  height: 100vh;
+  position: relative;
+  transition: width 0.3s ease;
+}
+
+/* ➖ 사이드바 접혔을 때 스타일 */
+.sidebar.collapsed {
+  width: 40px;
+  padding: 20px 6px;
+  overflow: visible;
+}
+
+/* 🌙 다크 모드 배경 및 기본 텍스트 색상 */
+.sidebar.dark {
+  background-color: #111;
+  color: white;
+}
+
+/* 🔘 사이드바 접기/펼치기 버튼 */
+.collapse-button {
+  position: absolute;
+  top: 2px;
+  right: -5px;
+  width: 24px;
+  height: 40px;
+  background-color: #666;
+  color: white;
+  border: none;
+  border-radius: 0 6px 6px 0;
+  cursor: pointer;
+  font-weight: bold;
+  user-select: none;
+  z-index: 999;
+  transition: background-color 0.2s ease;
+}
+
+.collapse-button:hover {
+  background-color: #444;
+}
+
+/* 🔍 검색 입력창 wrapper */
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* 🔍 검색 입력창 */
+.search-input {
+  width: 100%;
+  padding: 8px 36px 8px 12px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* ❌ 검색어 클리어 버튼 */
+.clear-input-btn {
+  position: absolute;
+  right: 10px;
+  top: 40%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent !important;
+  cursor: pointer;
+  font-size: 18px;
+  color: #000000;
+  padding: 0;
+  user-select: none;
+}
+
+.clear-input-btn:hover {
+  color: #555;
+}
+
+/* 📋 자동완성 리스트 영역 */
+.autocomplete-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #999;
+  border-top: none;
+  max-height: 150px;
+  overflow-y: auto;
+  background-color: white;
+  position: absolute;
+  width: 100%;
+  z-index: 10;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 0 0 4px 4px;
+}
+
+/* 📋 자동완성 항목 스타일 */
+.autocomplete-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  user-select: none;
+}
+
+.autocomplete-item:hover,
+.autocomplete-item:focus {
+  background-color: #eee;
+  outline: none;
+}
+
+/* 🔎 검색 버튼 */
+.search-button {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+  font-size: 16px;
+  border-radius: 4px;
+  border: none;
+  background-color: #eee;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.search-button:active {
+  transform: scale(0.95);
+}
+
+/* ⚠️ 검색 오류 메시지 */
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 14px;
+}
+
+/* 🕓 최근 검색어 리스트 */
+.search-history {
+  list-style: none;
+  padding: 0 6px;
+  margin: 8px 0;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+/* 🕓 검색어 아이템 한 줄 */
+.search-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 15px;
+  cursor: default;
+  user-select: none;
+  transition: opacity 0.3s ease;
+}
+
+/* 🔁 클릭 가능한 검색어 */
+.search-keyword {
+  cursor: pointer;
+  user-select: text;
+  flex-grow: 1;
+  padding-right: 6px;
+}
+
+/* ⭐ 즐겨찾기 버튼 */
+.fav-btn {
+  margin-left: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  color: rgb(255, 153, 0);
+  user-select: none;
+  transition: transform 0.2s ease;
+}
+
+.fav-btn:hover {
+  transform: scale(1.2);
+}
+
+/* ❌ 개별 삭제 버튼 */
+.delete-btn {
+  margin-left: 5px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: red;
+  font-size: 20px;
+  user-select: none;
+  transition: transform 0.2s ease;
+}
+
+.delete-btn:hover {
+  transform: scale(1.2);
+}
+
+/* 🧹 전체 검색 기록 삭제 버튼 */
+.clear-history-btn {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
+  background-color: #ddd;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.3s ease;
+}
+
+.clear-history-btn:hover {
+  background-color: #ccc;
+}
+
+/* 🔄 검색어 토글 버튼 (보이기/숨기기) */
+.toggle-history-btn {
+  width: 100%;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  font-size: 15px;
+  border-radius: 4px;
+  border: none;
+  background-color: #ccc;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-history-btn:hover {
+  background-color: #bbb;
+}
+
+/* 🌙 다크모드: 버튼 기본 색상 */
+.sidebar.dark button {
+  background-color: #333;
+  color: white;
+}
+
+/* 🌙 다크모드: 토글 버튼 */
+.sidebar.dark .toggle-history-btn {
+  background-color: #555;
+  color: white;
+}
+
+.sidebar.dark .toggle-history-btn:hover {
+  background-color: #666;
+}
+
+/* 🌙 다크모드: 전체 기록 삭제 버튼 */
+.sidebar.dark .clear-history-btn {
+  color: white;
+  background-color: #555;
+}
+
+.sidebar.dark .clear-history-btn:hover {
+  background-color: #666;
+}
+
+/* 🌙 다크모드: 즐겨찾기 색상 고정 (주황색) */
+.sidebar.dark .fav-btn {
+  color: rgb(255, 153, 0) !important;
+}
+
+/* 🌙 다크모드: ✕ 버튼 흰색으로 변경 */
+.sidebar.dark .clear-input-btn {
+  color: white !important;
+  background-color: transparent !important;
+}
+
+/* 🌙 다크모드: 입력창 배경 및 글자색 */
+.sidebar.dark .search-input {
+  background-color: #222;
+  color: white;
+  border: 1px solid #444;
+}
+
+/* 🌙 다크모드: placeholder 색상 */
+.sidebar.dark .search-input::placeholder {
+  color: #aaa;
+}
+
+/* ⚙️ 다크모드 & 초기화 버튼 wrapper */
+.top-controls {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+/* ⚙️ 다크모드 전환 및 초기화 버튼 */
+.toggle-darkmode-btn,
+.reset-page-btn {
+  flex: 1;
+  padding: 10px 12px;
+  font-size: 15px;
+  border-radius: 4px;
+  border: none;
+  background-color: #ccc;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-darkmode-btn:hover,
+.reset-page-btn:hover {
+  background-color: #bbb;
+}
+
+/* 🌙 다크모드: 다크모드/초기화 버튼 스타일 */
+.sidebar.dark .toggle-darkmode-btn,
+.sidebar.dark .reset-page-btn {
+  background-color: #555;
+  color: white;
+}
+
+.sidebar.dark .toggle-darkmode-btn:hover,
+.sidebar.dark .reset-page-btn:hover {
+  background-color: #666;
+}
