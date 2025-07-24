@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
 import Sidebar from './components/Sidebar/Sidebar';
@@ -10,21 +10,17 @@ import WeatherBar from './components/Weather/WeatherBar';
 
 function App() {
   const [showEmoji, setShowEmoji] = useState(true);
+  const [mapStyle, setMapStyle] = useState('base');
   const [darkMode, setDarkMode] = useState(false);
   const [user, setUser] = useState(null);
-
-
+  const [searchResults, setSearchResults] = useState([]);       // ✅ 추가
+  const [selectedPlace, setSelectedPlace] = useState(null);     // ✅ 추가
   const [searchQuery, setSearchQuery] = useState('');
-
-  const [searchResults, setSearchResults] = useState([]);
-  const [selectedPlace, setSelectedPlace] = useState(null);
-
 
   useEffect(() => {
     document.body.style.backgroundColor = darkMode ? '#222' : '#fff';
     document.body.style.color = darkMode ? '#fff' : '#000';
   }, [darkMode]);
-
 
   return (
     <div className={`App ${darkMode ? 'dark' : ''}`}>
@@ -34,19 +30,21 @@ function App() {
         <Sidebar
           showEmoji={showEmoji}
           setShowEmoji={setShowEmoji}
+          setMapStyle={setMapStyle}
           darkMode={darkMode}
           setDarkMode={setDarkMode}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
-          searchResults={searchResults}
-          setSearchResults={setSearchResults}
-          setSelectedPlace={setSelectedPlace}
+          searchResults={searchResults}            // ✅ 추가
+          setSearchResults={setSearchResults}      // ✅ 추가
+          setSelectedPlace={setSelectedPlace}      // ✅ 추가
         />
 
         <div className="map-container">
-          <NaverMap 
-          searchQuery={searchQuery}
-          searchResults={searchResults} selectedPlace={selectedPlace} />
+          <NaverMap
+            searchQuery={searchQuery}
+            selectedPlace={selectedPlace}           // ✅ 전달
+          />
           <WeatherBar
             darkMode={darkMode}
             searchQuery={searchQuery}
@@ -55,7 +53,6 @@ function App() {
       </div>
       <Footer darkMode={darkMode} />
     </div>
-
   );
 }
 

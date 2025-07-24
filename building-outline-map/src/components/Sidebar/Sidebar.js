@@ -1,50 +1,67 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './Sidebar.css';
-import { naverLocalSearch, naverGeocode } from '../utils/naverApi';
 
 const Sidebar = ({
-  searchResults, setSearchResults,
-  selectedPlace, setSelectedPlace,
   onSearch,
-  showEmoji, setShowEmoji,
-  darkMode, setDarkMode,
-  searchQuery,setSearchQuery
+  showEmoji,
+  setShowEmoji,
+  darkMode,
+  setDarkMode,
+  searchQuery,
+  setSearchQuery,
+  searchResults,        
+  setSearchResults,     
+  setSelectedPlace       
 }) => {
-
-  // 입력값 상태
   const [inputValue, setInputValue] = useState('');
-
-   // 최근 검색어 리스트 상태 (localStorage 초기화)
   const [searchHistory, setSearchHistory] = useState(() => {
     const saved = localStorage.getItem('searchHistory');
     return saved ? JSON.parse(saved) : [];
   });
-
-  // 즐겨찾기 리스트 상태
   const [favorites, setFavorites] = useState(() => {
     const saved = localStorage.getItem('favorites');
     return saved ? JSON.parse(saved) : [];
   });
-
-  // 최근 검색어 토글 상태
   const [showHistory, setShowHistory] = useState(true);
-
-  // 오류 메시지 상태
   const [errorMessage, setErrorMessage] = useState('');
-
-  // 사이드바 접힘 상태
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-
-  // 자동완성 리스트 상태
   const [autocompleteList, setAutocompleteList] = useState([]);
-
-  // 자동완성 영역 외부 클릭 감지를 위한 ref
   const autocompleteRef = useRef(null);
 
-  // * 신규) 맵 검색 로딩상태 - 네이버 검색 API가 추가됐습니다.
-  const [loading, setLoading] = useState(false);
+  const handleSearch = () => {
+    const trimmedInput = inputValue.trim();
+    if (trimmedInput === '') {
+      setErrorMessage('검색어를 입력하세요');
+      return;
+    }
 
-  // 입력값 변경 시 자동완성 업데이트
+    setErrorMessage('');
+    setSearchQuery(trimmedInput);
+
+    setSearchHistory((prevHistory) => {
+      const updated = [trimmedInput, ...prevHistory.filter(item => item !== trimmedInput)];
+      localStorage.setItem('searchHistory', JSON.stringify(updated.slice(0, 5)));
+      return updated.slice(0, 5);
+    });
+
+    fetch(`http://localhost:4000/kakao/address?query=${encodeURIComponent(trimmedInput)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!data.documents || data.documents.length === 0) {
+          alert('주소 검색 실패: 결과 없음');
+          return;
+        }
+        setSearchResults(data.documents);
+      })
+      .catch(err => {
+        console.error('Kakao 주소 검색 오류:', err);
+        alert('주소 검색 중 오류 발생');
+      });
+
+    setInputValue('');
+    setAutocompleteList([]);
+  };
+
   const handleInputChange = (e) => {
     const val = e.target.value;
     setInputValue(val);
@@ -62,69 +79,6 @@ const Sidebar = ({
     setErrorMessage('');
   };
 
-  // 검색 실행 함수: 히스토리, 에러관리, 쿼리(검색)관리
-  // * 신규)  const handleSearch = () => { 에서  const handleSearch = async () => { 로 async 추가(await 사용을 위해)
-  const handleSearch = async () => {
-    const trimmedInput = inputValue.trim();
-    if (trimmedInput === '') {
-      setErrorMessage('검색어를 입력하세요');
-      return;
-    }
-
-    setErrorMessage('');
-    setSearchQuery(trimmedInput);
-
-    // 중복 제거 + 최대 5개 저장
-    setSearchHistory((prevHistory) => {
-      const updated = [trimmedInput, ...prevHistory.filter(item => item !== trimmedInput)];
-      localStorage.setItem('searchHistory', JSON.stringify(updated.slice(0, 5)));
-      return updated.slice(0, 5);
-    });
-
-    // * 신규)지도검색 관련, 지도검색을 이용해서 쿼리가 들어오면
-    setLoading(true);
-
-    // * 신규) 네이버 검색 API로 검색결과 받아오기
-    try {
-      const localResults = await naverLocalSearch(trimmedInput);
-
-      // 검색결과를 지오코딩해서 위/경도 좌표 추출
-      const placesWithCoords = await Promise.all(
-        localResults.map(async item => {
-          const coords = await naverGeocode(item.roadAddress || item.address);
-          return { ...item, ...coords };
-        })
-      );
-
-      // 최대 5개의 검색결과 출력 (지오코딩으로 좌표변환 실패한 데이터는 제외 = 오류제외)
-      setSearchResults(
-        placesWithCoords
-          .filter(item => item.lat && item.lng)
-          .slice(0, 5)
-      );
-      setSelectedPlace(null);
-
-    } catch (err) {
-      setErrorMessage(`검색 된 장소가 없습니다.`);
-      setSearchResults([]);
-    }
-    setLoading(false);
-
-    setInputValue('');
-    setAutocompleteList([]);
-  };
-
-  // * 신규) 새 객체설정: 검색어, 검색결과, 검색결과 리스트, 좌표값, 에러메세지
-  const handleClear = () => {
-    setInputValue('');
-    setSearchQuery('');
-    setSearchResults([]);
-    setSelectedPlace(null);
-    setAutocompleteList([]);
-    setErrorMessage('');
-  };
-
-  // 즐겨찾기 추가/삭제
   const toggleFavorite = (keyword) => {
     const updated = favorites.includes(keyword)
       ? favorites.filter(item => item !== keyword)
@@ -134,32 +88,27 @@ const Sidebar = ({
     localStorage.setItem('favorites', JSON.stringify(updated));
   };
 
-  // 특정 검색어 삭제
   const handleDeleteKeyword = (keyword) => {
     const updated = searchHistory.filter((item) => item !== keyword);
     setSearchHistory(updated);
     localStorage.setItem('searchHistory', JSON.stringify(updated));
   };
 
-  // 전체 검색 기록 삭제
   const clearAllHistory = () => {
     setSearchHistory([]);
     localStorage.removeItem('searchHistory');
   };
 
-  // 사이드바 접기/펼치기 토글
   const toggleSidebar = () => {
     setSidebarCollapsed(prev => !prev);
   };
 
-  // 자동완성 클릭 시 검색 실행
   const handleAutocompleteClick = (keyword) => {
     setInputValue(keyword);
     setSearchQuery(keyword);
     setAutocompleteList([]);
   };
 
-  // 외부 클릭 시 자동완성 닫기
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -173,18 +122,8 @@ const Sidebar = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // * 신규) 검색 된 장소에서 읍면동 추출
-  function extractRegion(addr) {
-    if (!addr) return '';
-    const parts = addr.split(' ');
-    return parts.slice(0, 3).join(' ');
-  }
-
-  // 기존에 있던 sidebar 기능
   return (
     <div className={`sidebar ${darkMode ? 'dark' : ''} ${sidebarCollapsed ? 'collapsed' : ''}`}>
-
-      {/* 사이드바 접기 버튼 */}
       <button
         className="collapse-button"
         onClick={toggleSidebar}
@@ -193,12 +132,10 @@ const Sidebar = ({
         {sidebarCollapsed ? '▶' : '◀'}
       </button>
 
-      {/* 접혀있지 않을 때만 내용 표시 */}
       {!sidebarCollapsed && (
         <>
           <h2>🛠️ 기능 메뉴</h2>
 
-          {/* 위치 검색 */}
           <h3>위치 검색</h3>
           <div className="input-wrapper" ref={autocompleteRef}>
             <input
@@ -210,24 +147,20 @@ const Sidebar = ({
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               autoComplete="off"
               aria-label="위치 검색 입력창"
-              // * 신규) 검색결과 로딩
-              disabled={loading}
             />
-
-            {/* 입력 클리어 버튼 */}
             {inputValue && (
               <button
                 className="clear-input-btn"
-                // const handleClear 안에 기존에 있던 아래 기능 모두 포함으로 onClick={() => handleClear()} 한 줄로 수정
-                // setInputValue('');, setErrorMessage('');, setAutocompleteList([]);
-                onClick={() => handleClear()}
+                onClick={() => {
+                  setInputValue('');
+                  setErrorMessage('');
+                  setAutocompleteList([]);
+                }}
                 aria-label="검색어 지우기"
               >
                 ✕
               </button>
             )}
-
-            {/* 자동완성 리스트 */}
             {autocompleteList.length > 0 && (
               <ul className="autocomplete-list" role="listbox">
                 {autocompleteList.map((item, idx) => (
@@ -246,16 +179,34 @@ const Sidebar = ({
             )}
           </div>
 
-          {/* 검색 실행 버튼 */}
-          {/* 신규) 추가 disabled={loading}, {loading ? '검색 중...' : '🔍 검색'} */}
-          <button className="search-button" onClick={handleSearch} disabled={loading}>
-            {loading ? '검색 중...' : '🔍 검색'}
-            </button>
+          <button className="search-button" onClick={handleSearch}>🔍 검색</button>
 
-          {/* 오류 메시지 */}
           {errorMessage && <div className="error-message">{errorMessage}</div>}
 
-          {/* 최근 검색어 토글 */}
+          {searchResults.length > 0 && (
+            <>
+              <h4>검색 결과</h4>
+              <ul className="search-results">
+                {searchResults.map((place, idx) => (
+                  <li
+                    key={idx}
+                    className="search-result-item"
+                    onClick={() => {
+                      setSelectedPlace({
+                        name: place.place_name || place.address_name,
+                        x: parseFloat(place.x),
+                        y: parseFloat(place.y),
+                      });
+                      setSearchResults([]);
+                    }}
+                  >
+                    📍 {place.address_name}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+
           <button
             className="toggle-history-btn"
             onClick={() => setShowHistory(!showHistory)}
@@ -263,7 +214,6 @@ const Sidebar = ({
             {showHistory ? '최근 검색어 숨기기 ▲' : '최근 검색어 보기 ▼'}
           </button>
 
-          {/* 최근 검색어 목록 */}
           {showHistory && searchHistory.length > 0 && (
             <>
               <h4>최근 검색어</h4>
@@ -296,8 +246,6 @@ const Sidebar = ({
                   </li>
                 ))}
               </ul>
-
-              {/* 전체 검색 기록 삭제 버튼 */}
               <button
                 className="clear-history-btn"
                 onClick={clearAllHistory}
@@ -309,7 +257,6 @@ const Sidebar = ({
 
           <hr />
 
-          {/* 다크모드 & 초기화 버튼 (가로 배치) */}
           <h3>설정</h3>
           <div className="top-controls">
             <button
@@ -324,29 +271,6 @@ const Sidebar = ({
             >
               🔄 초기화
             </button>
-          </div>
-
-          {/* 신규) 검색결과 5개 맵에 마커표시 */}
-          <div className="search-results">
-            {searchResults && searchResults.length > 0 && searchResults.map((place, idx) => (
-              <div
-              key={idx}
-              className="search-result-item"
-              onClick={() => setSelectedPlace(place)}
-              style={{ cursor: 'pointer' }}
-              >
-                <strong>{place.title}</strong>
-                <span className="region">{extractRegion(place.roadAddress || place.address)}</span>
-                <button
-                onClick={e => {
-                  e.stopPropagation();
-                  navigator.clipboard.writeText(place.roadAddress || place.address);
-                }}
-                className="copy-btn"
-                >복사</button>
-                <div className="detail-addr">{place.roadAddress || place.address}</div>
-                </div>
-            ))}
           </div>
         </>
       )}

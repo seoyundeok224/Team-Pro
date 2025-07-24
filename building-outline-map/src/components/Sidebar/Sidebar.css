@@ -321,14 +321,3 @@
 .sidebar.dark .reset-page-btn:hover {
   background-color: #666;
 }
-
-/* 검색결과 부분 css */
-.search-title {
-  color: #1e60d1;    /* 네이버 지도 파란색 느낌 */
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.search-title:hover {
-  text-decoration: underline;
-}
