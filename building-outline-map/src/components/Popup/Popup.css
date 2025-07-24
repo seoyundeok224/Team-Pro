@@ -1,0 +1,97 @@
+/* 📌 팝업 전체를 덮는 어두운 배경 + 페이드인 애니메이션 */
+.popup-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.45); /* 반투명 어두운 배경 */
+  z-index: 999;                          /* 항상 위에 표시 */
+  animation: fadeIn 0.3s ease forwards; /* 서서히 나타나는 애니메이션 */
+}
+
+/* 페이드인 키프레임 애니메이션 정의 */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* 📦 팝업 박스 컨테이너 스타일 */
+.popup-box {
+  position: absolute;
+  top: 10%;                             /* 화면 위에서 10% 아래 위치 */
+  left: 22%;                           /* 화면 왼쪽에서 22% 지점 */
+  transform: translateX(-50%);         /* X축 중앙 정렬 */
+  background-color: #fff;              /* 흰 배경 */
+  padding: 20px;                       /* 내부 여백 */
+  width: 320px;                       /* 고정 너비 */
+  border-radius: 10px;                 /* 둥근 모서리 */
+  text-align: center;                  /* 텍스트 중앙 정렬 */
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.15),  /* 부드러운 그림자 효과 */
+    0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;              /* 연한 테두리 */
+  cursor: move;                       /* 드래그 가능 시 커서 모양 */
+  transition: box-shadow 0.3s ease;    /* 마우스 오버시 부드러운 그림자 변화 */
+  user-select: none;                   /* 텍스트 선택 방지 */
+}
+
+/* 마우스 오버 시 그림자 강조 효과 */
+.popup-box:hover {
+  box-shadow:
+    0 12px 36px rgba(0, 0, 0, 0.25),
+    0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 드래그 중 커서 모양 변경 */
+.popup-box:active {
+  cursor: grabbing;
+}
+
+/* 🪟 팝업 상단 헤더 (드래그 핸들 역할) */
+.popup-header {
+  background-color: #f1f1f1;            /* 연한 회색 배경 */
+  padding: 8px 0;                       /* 위아래 여백 */
+  border-top-left-radius: 12px;         /* 둥근 왼쪽 상단 */
+  border-top-right-radius: 12px;        /* 둥근 오른쪽 상단 */
+  border-bottom: 1px solid #ccc;        /* 구분선 */
+  cursor: move;                        /* 드래그 가능 커서 */
+  user-select: none;                   /* 선택 방지 */
+}
+
+/* 🖼️ 팝업 이미지 스타일 */
+.popup-image {
+  width: 100%;                        /* 부모 너비에 맞춤 */
+  margin-top: 12px;                   /* 위쪽 여백 */
+  border-radius: 8px;                 /* 이미지 모서리 둥글게 */
+  user-select: none;                  /* 이미지 선택 방지 */
+}
+
+/* 📝 팝업 본문 텍스트 */
+.popup-text {
+  margin: 5px 0;                     /* 위아래 여백 */
+  font-size: 14px;                   /* 텍스트 크기 */
+  color: #333;                      /* 텍스트 색상 */
+  user-select: text;                 /* 텍스트 선택 가능 */
+}
+
+/* ❌ 닫기 버튼 컨테이너 - 오른쪽 정렬 */
+.popup-buttons {
+  margin-top: 12px;                  /* 위쪽 여백 */
+  display: flex;
+  justify-content: flex-end;         /* 오른쪽 정렬 */
+}
+
+/* ❌ 닫기 버튼 스타일 */
+.popup-buttons button {
+  padding: 8px 16px;                /* 내부 여백 */
+  border: none;                    /* 테두리 제거 */
+  border-radius: 6px;              /* 둥근 모서리 */
+  background-color: #0078d7;        /* 파란 버튼 배경 */
+  color: white;                   /* 흰색 글자 */
+  font-weight: 600;
+  cursor: pointer;                /* 클릭 가능한 커서 */
+  transition: background-color 0.3s ease;
+  user-select: none;              /* 텍스트 선택 방지 */
+}
+
+.popup-buttons button:hover {
+  background-color: #005ea2;        /* 호버 시 진한 파란색 */
+}
