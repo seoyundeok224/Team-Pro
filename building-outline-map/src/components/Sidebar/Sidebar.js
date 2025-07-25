@@ -14,10 +14,20 @@ const Sidebar = ({
   setSearchResults,
   selectedPlace,
   setSelectedPlace,
+  errorMessage,
+  setErrorMessage,
+  loading,
+  setLoading,
 }) => {
 
-  // 입력값 상태
-  const [inputValue, setInputValue] = useState('');
+  // 입력값 상태 / *lse) useState(''); -> React.useState(''); 로 수정
+  const [inputValue, setInputValue] = React.useState('');
+
+   // *lse) 로딩, 에러 관리
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  // *lse) 검색어가 바뀌면 LocationSearch가 자동 실행
+  const [searchQuery, setSearchQuery] = useState('');
 
   // 최근 검색어 리스트 상태 (localStorage 초기화)
   const [searchHistory, setSearchHistory] = useState(() => {

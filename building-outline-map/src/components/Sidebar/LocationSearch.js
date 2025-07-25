@@ -9,69 +9,71 @@
 // lse 브랜치 기존작업: SideBar의 검색 탭 아래에 검색결과 5개 출력, 검색결과 선택시 해당 좌표로 맵 이동, 검색결과 5개 맵에 마커표시, 새 검색시 이전 검색의 마커 삭제(null)
 // 작업내역 기록을 위해 주석은 정리하지 마세요.
 
-import React, { useState } from 'react';
+import { useEffect } from 'react';
 import { naverLocalSearch, naverGeocode } from '../utils/naverApi';
 
-export default function LocationSearch({ onResults, onError, setSelectedPlace }) {
-  const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
+export default function LocationSearch({
+  query,
+  onResults,         // (places: Array) => void
+  setSelectedPlace,  // 초기 마커 리셋용
+  setErrorMessage,   // 에러 표시용
+  setLoading,        // 로딩 스피너 제어용
+}) {
+  useEffect(() => {
+    if (!query) return;             // 빈 쿼리 무시
+    let isCancelled = false;        // 언마운트 시 취소 플래그
 
-  const handleSearch = async () => {
-    const q = input.trim();
-    if (!q) {
-      onError('검색어를 입력하세요');
-      return;
-    }
+    const doSearch = async () => {
+      setErrorMessage('');
+      setLoading(true);
+      try {
+        const localResults = await naverLocalSearch(query);
+        let places = [];
 
-    onError('');        // 에러 리셋
-    setLoading(true);
-
-    try {
-      const localResults = await naverLocalSearch(q);
-      let places = [];
-
-      if (!localResults || localResults.length === 0) {
-        // Local Search 결과 없으면 직접 geocode
-        const coords = await naverGeocode(q);
-        if (coords) {
-          places = [{ title: q, address: q, roadAddress: q, ...coords }];
+        if (!localResults || localResults.length === 0) {
+          // Local Search 결과 없으면, 쿼리로 직접 geocode
+          const coords = await naverGeocode(query);
+          if (coords) {
+            places = [{
+              title: query,
+              address: query,
+              roadAddress: query,
+              ...coords
+            }];
+          }
+        } else {
+          // Local Search 결과가 있을 때
+          const list = await Promise.all(
+            localResults.map(async item => {
+              const c = await naverGeocode(item.roadAddress || item.address);
+              return c ? { ...item, ...c } : null;
+            })
+          );
+          places = list.filter(p => p && p.lat && p.lng);
         }
-      } else {
-        // Local Search 결과 있을 때
-        const list = await Promise.all(
-          localResults.map(async item => {
-            const coords = await naverGeocode(item.roadAddress || item.address);
-            return coords ? { ...item, ...coords } : null;
-          })
-        );
-        places = list.filter(p => p && p.lat && p.lng);
+
+        if (!isCancelled) {
+          onResults(places.slice(0, 5));
+          setSelectedPlace(null);
+          if (places.length === 0) {
+            setErrorMessage('검색된 장소가 없습니다.');
+          }
+        }
+      } catch (e) {
+        if (!isCancelled) {
+          console.error(e);
+          setErrorMessage('검색 중 오류가 발생했습니다.');
+          onResults([]);
+        }
+      } finally {
+        if (!isCancelled) setLoading(false);
       }
+    };
 
-      onResults(places.slice(0,5));
-      setSelectedPlace(null);
-    } catch (e) {
-      console.error(e);
-      onError('검색된 지역이 없습니다.');
-      onResults([]);
-    } finally {
-      setLoading(false);
-      setInput('');
-    }
-  };
+    doSearch();
+    return () => { isCancelled = true; };
+  }, [query, onResults, setSelectedPlace, setErrorMessage, setLoading]);
 
-  return (
-    <div className="location-search">
-      <input
-        type="text"
-        placeholder="도시나 지역 이름을 입력하세요"
-        value={input}
-        onChange={e => setInput(e.target.value)}
-        onKeyDown={e => e.key==='Enter' && handleSearch()}
-        disabled={loading}
-      />
-      <button onClick={handleSearch} disabled={loading}>
-        {loading ? '검색 중...' : '🔍 검색'}
-      </button>
-    </div>
-  );
+  return null; // UI 없음
 }
+
