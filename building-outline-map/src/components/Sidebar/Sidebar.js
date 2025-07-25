@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './Sidebar.css';
+import LocationSearch from './LocationSearch';
 
 const Sidebar = ({
   onSearch,
@@ -8,7 +9,11 @@ const Sidebar = ({
   darkMode,
   setDarkMode,
   searchQuery,
-  setSearchQuery
+  setSearchQuery,
+  searchResults,
+  setSearchResults,
+  selectedPlace,
+  setSelectedPlace,
 }) => {
 
   // 입력값 상태

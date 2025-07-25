@@ -5,7 +5,6 @@ const NAVER_CLIENT_ID = process.env.REACT_APP_NAVER_ID;
 function NaverMap({ searchResults = [], selectedPlace = null }) {
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
-  // const markerRef = useRef(null); 이제 단일마커 필요 없음
   const initMarkerRef = useRef(null);
   // 검색결과 5개의 장소를 표시 할 복수마커
   const resultMarkersRef = useRef([]);
