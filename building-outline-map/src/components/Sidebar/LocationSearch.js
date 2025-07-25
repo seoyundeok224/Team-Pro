@@ -1,5 +1,5 @@
 // 기존 Sidebar 에서 검색탭과 함께 관리하던 지도 검색관련 주소->좌표 변환하는 지오코딩 로직을 별도로 분리했습니다.
-// Sidebar에 추가됐던 주소검색 로직은 이 js 컴포넌트로 모두 몲김(완료)
+// Sidebar에 추가됐던 주소검색 로직은 이 js 컴포넌트로 모두 옮김(완료)
 // 기존에 seo 브랜치에서 작업했던 내역만 남겨놨습니다.
 
 // 기존 네이버 맵 API에서 한 키로 관리하던 기능들을 cors 오류 때문에 각각 새로 키 값을 발급받아 사용하는 방식으로 변경 됐습니다. 
@@ -13,7 +13,7 @@ import { useEffect } from 'react';
 import { naverLocalSearch, naverGeocode } from '../utils/naverApi';
 
 export default function LocationSearch({
-  query,
+  query,             // 검색어
   onResults,         // (places: Array) => void
   setSelectedPlace,  // 초기 마커 리셋용
   setErrorMessage,   // 에러 표시용
@@ -26,42 +26,38 @@ export default function LocationSearch({
     const doSearch = async () => {
       setErrorMessage('');
       setLoading(true);
+
       try {
         const localResults = await naverLocalSearch(query);
         let places = [];
 
-        if (!localResults || localResults.length === 0) {
-          // Local Search 결과 없으면, 쿼리로 직접 geocode
+        if (!localResults.length) {
+          // 결과 없으면 직접 geocode
           const coords = await naverGeocode(query);
           if (coords) {
-            places = [{
-              title: query,
-              address: query,
-              roadAddress: query,
-              ...coords
-            }];
+            places = [{ title: query, address: query, roadAddress: query, ...coords }];
           }
         } else {
-          // Local Search 결과가 있을 때
+          // Local Search 결과 있을 때
           const list = await Promise.all(
             localResults.map(async item => {
               const c = await naverGeocode(item.roadAddress || item.address);
               return c ? { ...item, ...c } : null;
             })
           );
-          places = list.filter(p => p && p.lat && p.lng);
+          places = list.filter(p => p && p.lat != null && p.lng != null);
         }
 
         if (!isCancelled) {
           onResults(places.slice(0, 5));
           setSelectedPlace(null);
-          if (places.length === 0) {
+          if (!places.length) {
             setErrorMessage('검색된 장소가 없습니다.');
           }
         }
-      } catch (e) {
+      } catch (err) {
         if (!isCancelled) {
-          console.error(e);
+          console.error('검색 중 오류:', err);
           setErrorMessage('검색 중 오류가 발생했습니다.');
           onResults([]);
         }
@@ -74,6 +70,6 @@ export default function LocationSearch({
     return () => { isCancelled = true; };
   }, [query, onResults, setSelectedPlace, setErrorMessage, setLoading]);
 
-  return null; // UI 없음
+  return null;
 }
 
