@@ -221,19 +221,22 @@ const Sidebar = ({
 
           {/* lse) 검색 결과 목록 (최대 5개) */}
           {searchResults.length > 0 && (
-            <ul className="search-results-list">
-              {searchResults.slice(0, 5).map((place, idx) => (
-                <li key={idx} className="search-result-item">
-                  <button
-                    onClick={() => {
-                      setSelectedPlace(place);
-                    }}
-                  >
-                    {place.title || place.roadAddress || place.address}
-                  </button>
-                </li>
-              ))}
-            </ul>
+            <div className="search-results-section">
+              <h4>검색 결과</h4>
+              <ul className="search-results-list">
+                {searchResults.slice(0, 5).map((place, idx) => (
+                  <li key={idx} className="search-result-item">
+                    {/* 클릭 시 해당 장소로 지도 이동 */}
+                    <button
+                      className="result-btn"
+                      onClick={() => setSelectedPlace(place)}
+                    >
+                      ➤ {place.title || place.roadAddress || place.address}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
 
           {/* lse) +++ 검색 실행로직 LocationSearch 는 handleSearch 밖, JSX 안에 이렇게 */}
