@@ -15,8 +15,7 @@ import { naverLocalSearch, naverGeocode } from '../utils/naverApi';
 export default function LocationSearch({
   query,             // 검색어
   onResults,         // (places: Array) => void
-  setSelectedPlace,  // 초기 마커 리셋용
-  onError, 
+  onError,           // 에러메세지 콜백
   setLoading,        // 로딩 스피너 제어용
 }) {
   useEffect(() => {
