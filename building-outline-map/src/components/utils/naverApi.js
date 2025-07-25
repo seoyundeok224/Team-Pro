@@ -59,14 +59,14 @@ export async function naverGeocode(address) {
     });
 
     if (!res.ok) {
-      console.error('Geocode 요청 실패:', res.status, await res.text());
+      console.error("Geocode 요청 실패:", res.status, await res.text());
       return null;
     }
 
     const data = await res.json();
 
     if (data.addresses?.length > 0) {
-      const { x, y } = data.addresses[0];
+      const addr = data.addresses[0];
       return {
         lat: parseFloat(addr.y),
         lng: parseFloat(addr.x),
@@ -95,8 +95,8 @@ export async function naverReverseGeocode(lat, lng) {
       },
     });
 
-   if (!res.ok) {
-      console.error('ReverseGeocode 요청 실패:', res.status, await res.text());
+    if (!res.ok) {
+      console.error("ReverseGeocode 요청 실패:", res.status, await res.text());
       return null;
     }
 
@@ -104,7 +104,7 @@ export async function naverReverseGeocode(lat, lng) {
     const area = data.results?.[0]?.region?.area1?.name;
     return area || null;
   } catch (err) {
-    console.error('ReverseGeocode 에러:', err);
+    console.error("ReverseGeocode 에러:", err);
     return null;
   }
 }

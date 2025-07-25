@@ -16,7 +16,7 @@ export default function LocationSearch({
   query,             // 검색어
   onResults,         // (places: Array) => void
   setSelectedPlace,  // 초기 마커 리셋용
-  setErrorMessage,   // 에러 표시용
+  onError, 
   setLoading,        // 로딩 스피너 제어용
 }) {
   useEffect(() => {
@@ -24,7 +24,7 @@ export default function LocationSearch({
     let isCancelled = false;        // 언마운트 시 취소 플래그
 
     const doSearch = async () => {
-      setErrorMessage('');
+      onError('');
       setLoading(true);
 
       try {
@@ -52,7 +52,7 @@ export default function LocationSearch({
           onResults(places.slice(0, 5));
           setSelectedPlace(null);
           if (!places.length) {
-            setErrorMessage('검색된 장소가 없습니다.');
+            onError('검색된 장소가 없습니다.');
           }
         }
       } catch (err) {
