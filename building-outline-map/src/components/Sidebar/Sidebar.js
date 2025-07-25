@@ -8,20 +8,18 @@ const Sidebar = ({
   setShowEmoji,
   darkMode,
   setDarkMode,
+  searchQuery,
+  setSearchQuery,
   searchResults,
   setSearchResults,
   selectedPlace,
   setSelectedPlace,
-
 }) => {
-
-  // 입력값 상태 / *lse) useState(''); -> React.useState(''); 로 수정
-  const [inputValue, setInputValue] = React.useState("");
+  // 입력값 상태
+  const [inputValue, setInputValue] = useState("");
 
   // *lse) 로딩, 에러 관리
   const [loading, setLoading] = useState(false);
-  const [inputError, setInputError] = useState(""); // 입력창 에러
-  const [searchError, setSearchError] = useState(""); // LocationSearch 에러
 
   // 최근 검색어 리스트 상태 (localStorage 초기화)
   const [searchHistory, setSearchHistory] = useState(() => {
@@ -57,9 +55,8 @@ const Sidebar = ({
       setErrorMessage("검색어를 입력하세요");
       return;
     }
-
-    setErrorMessage(""); //검색어 확인 후 에러메세지 초기화
-    setSearchQuery(q); // LocationSearch가 실행되도록 query 업데이트
+    setErrorMessage("");
+    setSearchQuery(trimmedInput);
     setLoading(true); // *lse) 로딩추가
 
     // 중복 제거 + 최대 5개 저장
@@ -222,19 +219,33 @@ const Sidebar = ({
             🔍 검색
           </button>
 
+          {/* lse) 검색 결과 목록 (최대 5개) */}
+          {searchResults.length > 0 && (
+            <ul className="search-results-list">
+              {searchResults.slice(0, 5).map((place, idx) => (
+                <li key={idx} className="search-result-item">
+                  <button
+                    onClick={() => {
+                      setSelectedPlace(place);
+                    }}
+                  >
+                    {place.title || place.roadAddress || place.address}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+
           {/* lse) +++ 검색 실행로직 LocationSearch 는 handleSearch 밖, JSX 안에 이렇게 */}
           <LocationSearch
             query={searchQuery}
             onResults={setSearchResults}
             onError={(err) => {
-              setSearchError(err);
+              setErrorMessage(err);
               setLoading(false);
             }}
             setLoading={setLoading}
           />
-          {/* lse) +++ 여기에 inputError / searchError 렌더링 */}
-          {inputError && <div className="error-message">{inputError}</div>}
-          {!inputError && searchError && <div className="error-message">{searchError}</div>}
 
           {/* 오류 메시지 */}
           {errorMessage && <div className="error-message">{errorMessage}</div>}
