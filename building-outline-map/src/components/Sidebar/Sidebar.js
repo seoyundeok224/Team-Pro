@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
-import './Sidebar.css';
-import LocationSearch from './LocationSearch';
+import React, { useState, useRef, useEffect } from "react";
+import "./Sidebar.css";
+import LocationSearch from "./LocationSearch";
 
 const Sidebar = ({
   onSearch,
@@ -8,36 +8,30 @@ const Sidebar = ({
   setShowEmoji,
   darkMode,
   setDarkMode,
-  searchQuery,
-  setSearchQuery,
   searchResults,
   setSearchResults,
   selectedPlace,
   setSelectedPlace,
-  errorMessage,
-  setErrorMessage,
-  loading,
-  setLoading,
+
 }) => {
 
   // 입력값 상태 / *lse) useState(''); -> React.useState(''); 로 수정
-  const [inputValue, setInputValue] = React.useState('');
+  const [inputValue, setInputValue] = React.useState("");
 
-   // *lse) 로딩, 에러 관리
+  // *lse) 로딩, 에러 관리
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  // *lse) 검색어가 바뀌면 LocationSearch가 자동 실행
-  const [searchQuery, setSearchQuery] = useState('');
+  const [inputError, setInputError] = useState(""); // 입력창 에러
+  const [searchError, setSearchError] = useState(""); // LocationSearch 에러
 
   // 최근 검색어 리스트 상태 (localStorage 초기화)
   const [searchHistory, setSearchHistory] = useState(() => {
-    const saved = localStorage.getItem('searchHistory');
+    const saved = localStorage.getItem("searchHistory");
     return saved ? JSON.parse(saved) : [];
   });
 
   // 즐겨찾기 리스트 상태
   const [favorites, setFavorites] = useState(() => {
-    const saved = localStorage.getItem('favorites');
+    const saved = localStorage.getItem("favorites");
     return saved ? JSON.parse(saved) : [];
   });
 
@@ -45,7 +39,7 @@ const Sidebar = ({
   const [showHistory, setShowHistory] = useState(true);
 
   // 오류 메시지 상태
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
 
   // 사이드바 접힘 상태
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -59,22 +53,29 @@ const Sidebar = ({
   // 검색 실행 함수
   const handleSearch = () => {
     const trimmedInput = inputValue.trim();
-    if (trimmedInput === '') {
-      setErrorMessage('검색어를 입력하세요');
+    if (trimmedInput === "") {
+      setErrorMessage("검색어를 입력하세요");
       return;
     }
 
-    setErrorMessage('');
-    setSearchQuery(trimmedInput);
+    setErrorMessage(""); //검색어 확인 후 에러메세지 초기화
+    setSearchQuery(q); // LocationSearch가 실행되도록 query 업데이트
+    setLoading(true); // *lse) 로딩추가
 
     // 중복 제거 + 최대 5개 저장
     setSearchHistory((prevHistory) => {
-      const updated = [trimmedInput, ...prevHistory.filter(item => item !== trimmedInput)];
-      localStorage.setItem('searchHistory', JSON.stringify(updated.slice(0, 5)));
+      const updated = [
+        trimmedInput,
+        ...prevHistory.filter((item) => item !== trimmedInput),
+      ];
+      localStorage.setItem(
+        "searchHistory",
+        JSON.stringify(updated.slice(0, 5))
+      );
       return updated.slice(0, 5);
     });
 
-    setInputValue('');
+    setInputValue("");
     setAutocompleteList([]);
   };
 
@@ -85,43 +86,43 @@ const Sidebar = ({
 
     if (val.length === 0) {
       setAutocompleteList([]);
-      setErrorMessage('');
+      setErrorMessage("");
       return;
     }
 
-    const filtered = searchHistory.filter(item =>
+    const filtered = searchHistory.filter((item) =>
       item.toLowerCase().includes(val.toLowerCase())
     );
     setAutocompleteList(filtered.slice(0, 5));
-    setErrorMessage('');
+    setErrorMessage("");
   };
 
   // 즐겨찾기 추가/삭제
   const toggleFavorite = (keyword) => {
     const updated = favorites.includes(keyword)
-      ? favorites.filter(item => item !== keyword)
+      ? favorites.filter((item) => item !== keyword)
       : [...favorites, keyword];
 
     setFavorites(updated);
-    localStorage.setItem('favorites', JSON.stringify(updated));
+    localStorage.setItem("favorites", JSON.stringify(updated));
   };
 
   // 특정 검색어 삭제
   const handleDeleteKeyword = (keyword) => {
     const updated = searchHistory.filter((item) => item !== keyword);
     setSearchHistory(updated);
-    localStorage.setItem('searchHistory', JSON.stringify(updated));
+    localStorage.setItem("searchHistory", JSON.stringify(updated));
   };
 
   // 전체 검색 기록 삭제
   const clearAllHistory = () => {
     setSearchHistory([]);
-    localStorage.removeItem('searchHistory');
+    localStorage.removeItem("searchHistory");
   };
 
   // 사이드바 접기/펼치기 토글
   const toggleSidebar = () => {
-    setSidebarCollapsed(prev => !prev);
+    setSidebarCollapsed((prev) => !prev);
   };
 
   // 자동완성 클릭 시 검색 실행
@@ -141,20 +142,23 @@ const Sidebar = ({
         setAutocompleteList([]);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
-    <div className={`sidebar ${darkMode ? 'dark' : ''} ${sidebarCollapsed ? 'collapsed' : ''}`}>
-      
+    <div
+      className={`sidebar ${darkMode ? "dark" : ""} ${
+        sidebarCollapsed ? "collapsed" : ""
+      }`}
+    >
       {/* 사이드바 접기 버튼 */}
       <button
         className="collapse-button"
         onClick={toggleSidebar}
-        aria-label={sidebarCollapsed ? '사이드바 펼치기' : '사이드바 접기'}
+        aria-label={sidebarCollapsed ? "사이드바 펼치기" : "사이드바 접기"}
       >
-        {sidebarCollapsed ? '▶' : '◀'}
+        {sidebarCollapsed ? "▶" : "◀"}
       </button>
 
       {/* 접혀있지 않을 때만 내용 표시 */}
@@ -171,7 +175,7 @@ const Sidebar = ({
               placeholder="도시나 지역 이름을 입력하세요"
               value={inputValue}
               onChange={handleInputChange}
-              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               autoComplete="off"
               aria-label="위치 검색 입력창"
             />
@@ -181,8 +185,8 @@ const Sidebar = ({
               <button
                 className="clear-input-btn"
                 onClick={() => {
-                  setInputValue('');
-                  setErrorMessage('');
+                  setInputValue("");
+                  setErrorMessage("");
                   setAutocompleteList([]);
                 }}
                 aria-label="검색어 지우기"
@@ -201,9 +205,12 @@ const Sidebar = ({
                     tabIndex={0}
                     className="autocomplete-item"
                     onClick={() => handleAutocompleteClick(item)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleAutocompleteClick(item)}
+                    onKeyDown={(e) =>
+                      e.key === "Enter" && handleAutocompleteClick(item)
+                    }
                   >
-                    {item}{favorites.includes(item) ? ' ⭐' : ''}
+                    {item}
+                    {favorites.includes(item) ? " ⭐" : ""}
                   </li>
                 ))}
               </ul>
@@ -211,7 +218,23 @@ const Sidebar = ({
           </div>
 
           {/* 검색 실행 버튼 */}
-          <button className="search-button" onClick={handleSearch}>🔍 검색</button>
+          <button className="search-button" onClick={handleSearch}>
+            🔍 검색
+          </button>
+
+          {/* lse) +++ 검색 실행로직 LocationSearch 는 handleSearch 밖, JSX 안에 이렇게 */}
+          <LocationSearch
+            query={searchQuery}
+            onResults={setSearchResults}
+            onError={(err) => {
+              setSearchError(err);
+              setLoading(false);
+            }}
+            setLoading={setLoading}
+          />
+          {/* lse) +++ 여기에 inputError / searchError 렌더링 */}
+          {inputError && <div className="error-message">{inputError}</div>}
+          {!inputError && searchError && <div className="error-message">{searchError}</div>}
 
           {/* 오류 메시지 */}
           {errorMessage && <div className="error-message">{errorMessage}</div>}
@@ -221,7 +244,7 @@ const Sidebar = ({
             className="toggle-history-btn"
             onClick={() => setShowHistory(!showHistory)}
           >
-            {showHistory ? '최근 검색어 숨기기 ▲' : '최근 검색어 보기 ▼'}
+            {showHistory ? "최근 검색어 숨기기 ▲" : "최근 검색어 보기 ▼"}
           </button>
 
           {/* 최근 검색어 목록 */}
@@ -243,9 +266,13 @@ const Sidebar = ({
                     <button
                       className="fav-btn"
                       onClick={() => toggleFavorite(item)}
-                      aria-label={favorites.includes(item) ? '즐겨찾기 해제' : '즐겨찾기 추가'}
+                      aria-label={
+                        favorites.includes(item)
+                          ? "즐겨찾기 해제"
+                          : "즐겨찾기 추가"
+                      }
                     >
-                      {favorites.includes(item) ? '★' : '☆'}
+                      {favorites.includes(item) ? "★" : "☆"}
                     </button>
                     <button
                       className="delete-btn"
@@ -259,10 +286,7 @@ const Sidebar = ({
               </ul>
 
               {/* 전체 검색 기록 삭제 버튼 */}
-              <button
-                className="clear-history-btn"
-                onClick={clearAllHistory}
-              >
+              <button className="clear-history-btn" onClick={clearAllHistory}>
                 🧹 전체 기록 삭제
               </button>
             </>
@@ -277,7 +301,7 @@ const Sidebar = ({
               className="toggle-darkmode-btn"
               onClick={() => setDarkMode(!darkMode)}
             >
-              {darkMode ? '💡 라이트 모드' : '🌙 다크 모드'}
+              {darkMode ? "💡 라이트 모드" : "🌙 다크 모드"}
             </button>
             <button
               className="reset-page-btn"
